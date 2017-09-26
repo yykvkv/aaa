@@ -30,11 +30,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.MessageFormat;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Main class.
@@ -183,8 +179,17 @@ public class Main {
         Objects.requireNonNull(itemName, "--item-name argument must be "
                 + "specified, example: --item-name /root/item");
 
-        Convertor.convert(inputFile, outputFile, columns, filters, remappings,
-                separator, trimValues, join, itemName);
+        ConversionConfig config = new DefaultConversionConfig.DefaultConversionConfigBuilder()
+                .setColumns(Arrays.asList(columns))
+                .setFilters(filters)
+                .setRemappings(remappings)
+                .setSeparator(separator)
+                .setTrim(trimValues)
+                .setJoin(join)
+                .setItemName(itemName)
+                .build();
+        Convertor convertor = new Convertor(config);
+        convertor.convert(inputFile, outputFile);
     }
 
     /**
