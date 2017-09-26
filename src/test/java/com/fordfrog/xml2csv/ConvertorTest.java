@@ -93,6 +93,7 @@ public class ConvertorTest {
         Assert.assertEquals(expected, output);
     }
 
+    @Test
     public void testConvertHierarchy() throws Throwable {
         String input = contentLoader.loadContent("/input-hierarchy.xml");
         String expected = contentLoader.loadContent("/output-hierarchy.csv");
@@ -104,6 +105,22 @@ public class ConvertorTest {
                 .setColumns(columns)
                 .setItemName("/root/item")
                 .setSeparator(',')
+                .build();
+        Convertor convertor = new Convertor(config);
+
+        String output = convertor.convert(input);
+
+        Assert.assertEquals(expected, output);
+    }
+
+    @Test
+    public void testConvertAttributes() throws Throwable {
+        String input = contentLoader.loadContent("/input-attributes.xml");
+        String expected = contentLoader.loadContent("/output-attributes.csv");
+        List<String> columns = Arrays.asList("value[@type='a']","value[@type='b']");
+        ConversionConfig config = new DefaultConversionConfigBuilder()
+                .setColumns(columns)
+                .setItemName("/root/item")
                 .build();
         Convertor convertor = new Convertor(config);
 

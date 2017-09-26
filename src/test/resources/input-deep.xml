@@ -3,7 +3,7 @@
     	<item1>
     		<item2>
         		<value1>1</value1>
-        		<value2>2</value2>
+        		<value2 type="a">2</value2>
         		<value3>3</value3>
         	</item2>
         </item1>
