@@ -21,6 +21,7 @@
  */
 package com.fordfrog.xml2csv;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
@@ -44,6 +45,14 @@ import javax.xml.stream.XMLStreamReader;
  */
 public class Convertor {
 
+    public static void convert(final String inputFilePath, final String outputFilePath,
+                               final String[] columns, final Filters filters,
+                               final Remappings remappings, final char separator,
+                               final boolean trim, final boolean join, final String itemName) {
+        File inputFile = new File(inputFilePath);
+        File outputFile = new File(outputFilePath);
+        convert(inputFile.toPath(), outputFile.toPath(), columns, filters, remappings, separator, trim, join, itemName);
+    }
     /**
      * Converts input XML file to output CSV file.
      *

@@ -1,68 +1,33 @@
-/**
- * Copyright 2013 Marcin Mielnicki
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- */
 package com.fordfrog.xml2csv;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.net.URISyntaxException;
-import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import org.junit.Assert;
 import org.junit.Test;
+import uk.co.mruoc.properties.ClasspathFileContentLoader;
+import uk.co.mruoc.properties.FileContentLoader;
 
 public class ConvertorTest {
 
-    String readFile(String path, Charset encoding)
-            throws IOException {
-        final byte[] encoded = Files.readAllBytes(Paths.get(this.getClass().
-                getResource(path).getFile()));
+    private final FileContentLoader contentLoader = new ClasspathFileContentLoader();
 
-        return encoding.decode(ByteBuffer.wrap(encoded)).toString();
-    }
-
-    @Test
-    public void testConvertSiple()
-            throws IOException, URISyntaxException {
+    public void testConvertSimple() throws Throwable {
         final String inputFile = "/input-simple.xml";
         final String outputFile = "/output-simple.csv";
+        final String[] columns = new String[]{"value1", "value2", "value3"};
         final Writer writer = new StringWriter();
 
         Convertor.convert(this.getClass().getResourceAsStream(inputFile),
-                writer, new String[]{"value1", "value2", "value3"}, null, null,
+                writer, columns, null, null,
                 ';', false, false, "/root/item");
 
-        final String expected = readFile(outputFile, StandardCharsets.UTF_8);
-
+        final String expected = contentLoader.loadContent(outputFile);
         Assert.assertEquals(expected, writer.toString());
     }
 
     @Test
-    public void testConvertNewLines()
-            throws IOException, URISyntaxException {
+    public void testConvertNewLines() throws Throwable {
         final Writer writer = new StringWriter();
 
         Convertor.convert(new ByteArrayInputStream("<r><i><v>1\n1</v></i></r>".
@@ -73,8 +38,7 @@ public class ConvertorTest {
     }
 
     @Test
-    public void testConvertNewLinesBetweenXMLEscape()
-            throws IOException, URISyntaxException {
+    public void testConvertNewLinesBetweenXMLEscape() throws Throwable {
         final Writer writer = new StringWriter();
 
         Convertor.convert(new ByteArrayInputStream(
@@ -85,8 +49,7 @@ public class ConvertorTest {
     }
 
     @Test
-    public void testConvertTrimValues()
-            throws IOException, URISyntaxException {
+    public void testConvertTrimValues() throws Throwable {
         final String inputFile = "/input-simple.xml";
         final String outputFile = "/output-trim.csv";
         final Writer writer = new StringWriter();
@@ -95,14 +58,12 @@ public class ConvertorTest {
                 writer, new String[]{"value1", "value2", "value3"}, null, null,
                 ';', true, false, "/root/item");
 
-        final String expected = readFile(outputFile, StandardCharsets.UTF_8);
-
+        final String expected = contentLoader.loadContent(outputFile);
         Assert.assertEquals(expected, writer.toString());
     }
 
     @Test
-    public void testConvertMutipleSelectFirst()
-            throws IOException, URISyntaxException {
+    public void testConvertMutipleSelectFirst() throws Throwable {
         final String inputFile = "/input-multiple.xml";
         final String outputFile = "/output-multiple-select-first.csv";
         final Writer writer = new StringWriter();
@@ -111,14 +72,13 @@ public class ConvertorTest {
                 writer, new String[]{"value1", "value2", "value3"}, null, null,
                 ',', false, false, "/root/item");
 
-        final String expected = readFile(outputFile, StandardCharsets.UTF_8);
+        final String expected = contentLoader.loadContent(outputFile);
 
         Assert.assertEquals(expected, writer.toString());
     }
 
     @Test
-    public void testConvertMutipleJoin()
-            throws IOException, URISyntaxException {
+    public void testConvertMultipleJoin() throws Throwable {
         final String inputFile = "/input-multiple.xml";
         final String outputFile = "/output-multiple-join.csv";
         final Writer writer = new StringWriter();
@@ -127,14 +87,13 @@ public class ConvertorTest {
                 writer, new String[]{"value1", "value2", "value3"}, null, null,
                 ',', false, true, "/root/item");
 
-        final String expected = readFile(outputFile, StandardCharsets.UTF_8);
+        final String expected = contentLoader.loadContent(outputFile);
 
         Assert.assertEquals(expected, writer.toString());
     }
 
     @Test
-    public void testConvertDeep()
-            throws IOException, URISyntaxException {
+    public void testConvertDeep() throws Throwable {
         final String inputFile = "/input-deep.xml";
         final String outputFile = "/output-deep.csv";
         final Writer writer = new StringWriter();
@@ -143,14 +102,13 @@ public class ConvertorTest {
                 writer, new String[]{"value1", "value2", "value3"}, null, null,
                 ';', false, false, "/root/item0/item1/item2");
 
-        final String expected = readFile(outputFile, StandardCharsets.UTF_8);
+        final String expected = contentLoader.loadContent(outputFile);
 
         Assert.assertEquals(expected, writer.toString());
     }
 
     @Test
-    public void testConvertHierarchy()
-            throws IOException, URISyntaxException {
+    public void testConvertHierarchy() throws Throwable {
         final String inputFile = "/input-hierarchy.xml";
         final String outputFile = "/output-hierarchy.csv";
         final Writer writer = new StringWriter();
@@ -160,7 +118,7 @@ public class ConvertorTest {
                     "body/value4/value41", "body/value4/value42"}, null, null,
                 ',', false, false, "/root/item");
 
-        final String expected = readFile(outputFile, StandardCharsets.UTF_8);
+        final String expected = contentLoader.loadContent(outputFile);
 
         Assert.assertEquals(expected, writer.toString());
     }
