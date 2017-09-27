@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<SyncTPAROpenItems xmlns="http://schema.infor.com/InforOAGIS/2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://schema.infor.com/InforOAGIS/2 SyncTPAROpenItems.xsd" releaseID="9.2"
+                   versionID="2.0.1" systemEnvironmentCode="Production" languageCode="GB">
+    <ApplicationArea>
+        <Sender>
+            <LogicalID schemeVersionID="1.0">infor.m3be.Dev</LogicalID>
+            <ComponentID schemeVersionID="15.1.4">M3BE</ComponentID>
+            <ConfirmationCode>OnError</ConfirmationCode>
+        </Sender>
+        <CreationDateTime>2017-06-23T10:28:55.676Z</CreationDateTime>
+        <BODID>ebd95424-4d93-49f3-9e26-f6b73558be5f</BODID>
+    </ApplicationArea>
+    <DataArea>
+        <Sync>
+            <AccountingEntityID>330_AAA</AccountingEntityID>
+            <ActionCriteria>
+                <ActionExpression actionCode="Add"/>
+            </ActionCriteria>
+        </Sync>
+        <TPAROpenItems type="Reconcilliation">
+            <OpenItem>
+                <Brand>Demo (330AAA)</Brand>
+                <PayerID>10007</PayerID>
+                <CustomerID>10007</CustomerID>
+                <CustomerName>IU Beta AB settlement discount (SE)</CustomerName>
+                <Address type="Customer">
+                    <AddressLine sequence="1">Hamntorget 6</AddressLine>
+                    <AddressLine sequence="2"/>
+                    <AddressLine sequence="3">SE-861 47 Stockholm</AddressLine>
+                    <AddressLine sequence="4">SWEDEN</AddressLine>
+                    <CountrySubDivisionCode listID="Country Sub-divisions">SW</CountrySubDivisionCode>
+                    <CountryCode listID="Countries">SE</CountryCode>
+                    <PostalCode>SE-861 47</PostalCode>
+                </Address>
+                <Contact type="Customer"/>
+                <Contact type="Company"/>
+                <InvoiceNumber>001000006</InvoiceNumber>
+                <TransactionDate>2001-09-05</TransactionDate>
+                <DueDate>2001-10-30</DueDate>
+                <CostCentre>CPSD4L</CostCentre>
+                <TransactionType>10</TransactionType>
+                <TransactionAmount currencyID="EUR">1125.00</TransactionAmount>
+                <TransactionNetAmount currencyID="EUR">1125.00</TransactionNetAmount>
+                <CreditStatus>0</CreditStatus>
+                <TransactionID>10001000006200110000081</TransactionID>
+                <LegalStatus>CG1</LegalStatus>
+            </OpenItem>
+            <OpenItem>
+                <Brand>Demo (330AAA)</Brand>
+                <PayerID>10007</PayerID>
+                <CustomerID>10007</CustomerID>
+                <CustomerName>IU Beta AB settlement discount (SE)</CustomerName>
+                <Address type="Customer">
+                    <AddressLine sequence="1">Hamntorget 6</AddressLine>
+                    <AddressLine sequence="2"/>
+                    <AddressLine sequence="3">SE-861 47 Stockholm</AddressLine>
+                    <AddressLine sequence="4">SWEDEN</AddressLine>
+                    <CountrySubDivisionCode listID="Country Sub-divisions">SW</CountrySubDivisionCode>
+                    <CountryCode listID="Countries">SE</CountryCode>
+                    <PostalCode>SE-861 47</PostalCode>
+                </Address>
+                <Contact type="Customer"/>
+                <Contact type="Company"/>
+                <InvoiceNumber>0052110001</InvoiceNumber>
+                <TransactionDate>2003-03-04</TransactionDate>
+                <DueDate>2003-03-04</DueDate>
+                <CostCentre>BMX8SA</CostCentre>
+                <TransactionType>10</TransactionType>
+                <TransactionAmount currencyID="EUR">-1125.00</TransactionAmount>
+                <TransactionNetAmount currencyID="EUR">-1125.00</TransactionNetAmount>
+                <CreditStatus>0</CreditStatus>
+                <TransactionID>100052110001200310000372</TransactionID>
+                <LegalStatus>CG1</LegalStatus>
+            </OpenItem>
+            <OpenItem>
+                <Brand>Demo (330AAA)</Brand>
+                <PayerID>24003</PayerID>
+                <CustomerID>24003</CustomerID>
+                <CustomerName>IU Zeta GmbH German customer (DE)</CustomerName>
+                <Address type="Customer">
+                    <AddressLine sequence="1">Flughafenstrasse 52a Haus C</AddressLine>
+                    <AddressLine sequence="2"/>
+                    <AddressLine sequence="3">DE-22335 Hamburg</AddressLine>
+                    <AddressLine sequence="4">GERMANY</AddressLine>
+                    <CountrySubDivisionCode listID="Country Sub-divisions">02</CountrySubDivisionCode>
+                    <CountryCode listID="Countries">DE</CountryCode>
+                    <PostalCode>DE-22335</PostalCode>
+                </Address>
+                <Contact type="Customer"/>
+                <Contact type="Company"/>
+                <InvoiceNumber>001000073</InvoiceNumber>
+                <TransactionDate>2003-11-26</TransactionDate>
+                <DueDate>2003-12-26</DueDate>
+                <CostCentre>BMX9NA</CostCentre>
+                <TransactionType>10</TransactionType>
+                <TransactionAmount currencyID="EUR">26431.89</TransactionAmount>
+                <TransactionNetAmount currencyID="EUR">26431.89</TransactionNetAmount>
+                <CreditStatus>0</CreditStatus>
+                <TransactionID>10001000073200310001191</TransactionID>
+                <LegalStatus>CG2</LegalStatus>
+            </OpenItem>
+            <OpenItem>
+                <Brand>Demo (330AAA)</Brand>
+                <PayerID>24003</PayerID>
+                <CustomerID>24003</CustomerID>
+                <CustomerName>IU Zeta GmbH German customer (DE)</CustomerName>
+                <Address type="Customer">
+                    <AddressLine sequence="1">Flughafenstrasse 52a Haus C</AddressLine>
+                    <AddressLine sequence="2"/>
+                    <AddressLine sequence="3">DE-22335 Hamburg</AddressLine>
+                    <AddressLine sequence="4">GERMANY</AddressLine>
+                    <CountrySubDivisionCode listID="Country Sub-divisions">02</CountrySubDivisionCode>
+                    <CountryCode listID="Countries">DE</CountryCode>
+                    <PostalCode>DE-22335</PostalCode>
+                </Address>
+                <Contact type="Customer"/>
+                <Contact type="Company"/>
+                <InvoiceNumber>001000079</InvoiceNumber>
+                <TransactionDate>2003-12-02</TransactionDate>
+                <DueDate>2004-01-01</DueDate>
+                <CostCentre>CPSETA</CostCentre>
+                <TransactionType>10</TransactionType>
+                <TransactionAmount currencyID="EUR">29001.29</TransactionAmount>
+                <TransactionNetAmount currencyID="EUR">29001.29</TransactionNetAmount>
+                <CreditStatus>0</CreditStatus>
+                <TransactionID>10001000079200310001251</TransactionID>
+                <LegalStatus>CG2</LegalStatus>
+            </OpenItem>
+            <OpenItem>
+                <Brand>Demo (330AAA)</Brand>
+                <PayerID>10001</PayerID>
+                <CustomerID>10001</CustomerID>
+                <CustomerName>IU Alpha AB (SE)</CustomerName>
+                <Address type="Customer">
+                    <AddressLine sequence="1">Sodra Gubberogatan 4</AddressLine>
+                    <AddressLine sequence="2"/>
+                    <AddressLine sequence="3">SE-416 63 Gothenburg</AddressLine>
+                    <AddressLine sequence="4">SWEDEN</AddressLine>
+                    <CountrySubDivisionCode listID="Country Sub-divisions">SW</CountrySubDivisionCode>
+                    <CountryCode listID="Countries">SE</CountryCode>
+                    <PostalCode>SE-416 63</PostalCode>
+                </Address>
+                <Contact type="Customer">
+                    <Name>Micky Mouse</Name>
+                    <TelephoneNumber>01604 123456</TelephoneNumber>
+                </Contact>
+                <Contact type="Company"/>
+                <InvoiceNumber>001000076</InvoiceNumber>
+                <TransactionDate>2003-12-02</TransactionDate>
+                <DueDate>2004-01-07</DueDate>
+                <CostCentre>TPK83A</CostCentre>
+                <TransactionType>10</TransactionType>
+                <TransactionAmount currencyID="EUR">21855.75</TransactionAmount>
+                <TransactionNetAmount currencyID="EUR">21855.75</TransactionNetAmount>
+                <CreditStatus>0</CreditStatus>
+                <TransactionID>10001000076200310001241</TransactionID>
+                <LegalStatus>CG1</LegalStatus>
+            </OpenItem>
+        </TPAROpenItems>
+    </DataArea>
+</SyncTPAROpenItems>

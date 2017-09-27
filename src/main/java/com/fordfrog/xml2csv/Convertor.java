@@ -94,78 +94,103 @@ public class Convertor {
             final XMLStreamReader reader = xMLInputFactory.
                     createXMLStreamReader(inputStream);
 
-            List<List<String>> rows = new ArrayList<>();
+            //List<Row> rows = new ArrayList<>();
             List<String> columns = config.getColumns();
             StringBuilder currentPath = new StringBuilder();
-            List<String> row = Arrays.asList(new String[columns.size()]);
-            System.out.println("row size " + row.size());
+            Row row = new Row(columns.size());
+            //System.out.println("row column count " + row.getNumberOfColumns());
             int columnIndex = -1;
             while (reader.hasNext()) {
                 int next = reader.next();
-                //System.out.println("next " + next);
-
                 switch (next) {
                     case XMLStreamReader.START_ELEMENT:
-                        currentPath.append("/").append(reader.getLocalName());
-                        String toFind = currentPath.toString().replace(config.getItemName() + "/", "");
-                       // if (columns.contains(toFind)) {
-                       //     System.out.println("FOUND column " + toFind);
-                        //}
-                        columnIndex = columns.indexOf(toFind);//columns.indexOf(reader.getLocalName());
-                        //System.out.println("column index " + columnIndex + " cur " + currentPath.toString() + " item name " + config.getItemName());
+                        //System.out.println("START_ELEMENT " + reader.getLocalName());
+                        String name = getLocalName(reader);
+                        currentPath.append("/").append(name);
                         //System.out.println("currentPath " + currentPath.toString());
-                        //System.out.println("itemName " + config.getItemName());
+
+                        //System.out.println("config item name " + config.getItemName());
+                        //System.out.println(currentPath.toString());
+                        //System.out.println(config.getItemName());
+
+                        String toFind = currentPath.toString().replace(config.getItemName() + "/", "");
+                        //System.out.println("toFind " + toFind + " in " + columns.toString());
+                        columnIndex = columns.indexOf(toFind);
+                        if (columnIndex == -1 && toFind.contains("@")) {
+                            toFind = toFind.substring(0, toFind.indexOf("["));
+                            //System.out.println("not found removed attribute now toFind " + toFind);
+                            columnIndex = columns.indexOf(toFind);
+                        }
+
+                        /*if (columnIndex == -1 && reader.getAttributeCount() > 0) {
+                            for (int a = 0; a < reader.getAttributeCount() && columnIndex == -1; a++) {
+                                String attributeToFind = toFind + "[@" + reader.getAttributeLocalName(a) + "='" + reader.getAttributeValue(a) + "']";
+                                System.out.println("attributeToFind " + attributeToFind);
+                                columnIndex = columns.indexOf(attributeToFind);
+                                System.out.println("new columnIndex " + columnIndex);
+                            }
+                        }*/
+
+                        //System.out.println(reader.getLocalName() + " attribute count " + reader.getAttributeCount() + " columnIndex " + columnIndex + " toFind " + toFind + " cols " + columns);
                         if (currentPath.toString().equals(config.getItemName())) {
-                            System.out.println("ROW START");
-                            row = Arrays.asList(new String[columns.size()]);
+                            //System.out.println("ROW START");
+                            row = new Row(columns.size());
                         }
                         break;
                     case XMLStreamReader.CHARACTERS:
+                        //System.out.println("CHARACTERS " + reader.getText());
                         if (columnIndex > -1) {
-                            System.out.println("adding text " + currentPath.toString() + " " + reader.getText());
+                            //System.out.println("adding text " + currentPath.toString() + " " + reader.getText());
                             if (config.shouldJoin()) {
-                                String value = row.get(columnIndex);
-                                if (value == null) {
-                                    value = "";
-                                }
-                                if (!StringUtils.isEmpty(value))
-                                    value += ", ";
-                                value += toText(reader);
-                                row.set(columnIndex, value);
+                                row.join(columnIndex, reader.getText());
                             } else {
-                                if (StringUtils.isEmpty(row.get(columnIndex)))
-                                    row.set(columnIndex, toText(reader));
+                                row.append(columnIndex, reader.getText());
                             }
                         }
-                        break;
-                    case XMLStreamReader.ATTRIBUTE:
-                        //ignore
                         break;
                     case XMLStreamReader.END_ELEMENT:
                         if (currentPath.toString().equals(config.getItemName())) {
-                            System.out.println("ROW END");
-                            if (row.size() > 0) {
-                                rows.add(row);
-                            }
+                            //System.out.println("ROW END");
+                            //if (row.size() > 0) {
+                            writeRow(writer, row);
+                                //rows.add(row);
+                            //}
                         }
                         columnIndex = -1;
-                        currentPath = new StringBuilder(StringUtils.removeEnd(currentPath.toString(), "/" + reader.getLocalName()));
+
+                        String path = currentPath.toString();
+                        if (!path.isEmpty()) {
+                            int startIndex = path.lastIndexOf("/" + reader.getLocalName());
+                            //System.out.println("removing element " + reader.getLocalName() + " from path " + path + " start index " + startIndex + " " + path.length());
+                            currentPath = new StringBuilder(path.substring(0, startIndex));
+                            //System.out.println("path after removal " + currentPath.toString());
+                        }
+
+                        //currentPath = new StringBuilder(StringUtils.removeEnd(currentPath.toString(), "/" + getLocalName(reader)));
                         break;
                 }
 
             }
 
-            System.out.println("rows " + rows.size());
-            for (List<String> row1 : rows) {
-                writeRow(writer, row1);
-                System.out.println(row1);
-            }
+            //System.out.println("rows " + rows.size());
+            //for (Row row1 : rows) {
+            //    writeRow(writer, row1);
+                //System.out.println(row1);
+            //}
 
         } catch (final IOException ex) {
             throw new RuntimeException("IO operation failed", ex);
         } catch (final XMLStreamException ex) {
             throw new RuntimeException("XML stream exception", ex);
         }
+    }
+
+    private String getLocalName(XMLStreamReader reader) {
+        StringBuilder name = new StringBuilder(reader.getLocalName());
+        if (reader.getAttributeCount() > 0)
+            for (int a = 0; a < reader.getAttributeCount(); a++)
+                name.append("[@").append(reader.getAttributeLocalName(a)).append("='").append(reader.getAttributeValue(a)).append("']");
+        return name.toString();
     }
 
     private String toText(XMLStreamReader reader) {
@@ -175,10 +200,13 @@ public class Convertor {
         return value;
     }
 
-    private void writeRow(Writer writer, List<String> row) throws IOException {
+    private void writeRow(Writer writer, Row row) throws IOException {
         ArrayList<String> quoted = new ArrayList<>();
-        for (String i : row)
+        for (String i : row) {
+            if (config.shouldTrim())// && i != null)
+               i = i.trim();
             quoted.add(CsvUtils.quoteString(i));
+        }
         writer.append(StringUtils.join(quoted, config.getSeparator()));
         writer.append(System.lineSeparator());
     }

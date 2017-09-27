@@ -1,6 +1,6 @@
 <root>
     <item>
-        <value type="b">c</value>
-        <value type="c">b</value>
+        <value type="customer">Michael Ruocco</value>
+        <value type="user">MRUOC</value>
     </item>
 </root>

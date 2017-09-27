@@ -1,0 +1,10 @@
+<root>
+    <item type="customer">
+        <value1>Michael Ruocco</value1>
+        <value2>32</value2>
+    </item>
+    <item type="user">
+        <value1>MRUOC</value1>
+        <value2>100</value2>
+    </item>
+</root>
