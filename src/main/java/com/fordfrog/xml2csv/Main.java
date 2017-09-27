@@ -52,13 +52,9 @@ public class Main {
             return;
         }
 
-        final Filters filters = new Filters();
-        final Remappings remappings = new Remappings();
         String[] columns = null;
         Path inputFile = null;
         Path outputFile = null;
-        Filter filter = null;
-        Remapping remapping = null;
         char separator = ',';
         boolean trimValues = false;
         boolean join = false;
@@ -69,44 +65,6 @@ public class Main {
                 case "--columns":
                     i++;
                     columns = args[i].split(",");
-
-                    break;
-                case "--filter-column":
-                    filter = new Filter();
-                    filters.addFilter(filter);
-
-                    i++;
-
-                    filter.setColumn(args[i]);
-
-                    break;
-                case "--filter-exclude":
-                    if (filter == null) {
-                        throw new RuntimeException(
-                                "--filter-column must be specified first");
-                    }
-
-                    filter.setExclude(true);
-
-                    break;
-                case "--filter-include":
-                    if (filter == null) {
-                        throw new RuntimeException(
-                                "--filter-column must be specified first");
-                    }
-
-                    filter.setExclude(false);
-
-                    break;
-                case "--filter-values":
-                    i++;
-
-                    if (filter == null) {
-                        throw new RuntimeException(
-                                "--filter-column must be specified first");
-                    }
-
-                    filter.setValues(loadValues(Paths.get(args[i])));
 
                     break;
                 case "--input":
@@ -122,25 +80,6 @@ public class Main {
                 case "--output":
                     i++;
                     outputFile = Paths.get(args[i]);
-
-                    break;
-                case "--remap-column":
-                    remapping = new Remapping();
-                    remappings.addRemapping(remapping);
-
-                    i++;
-
-                    remapping.setColumn(args[i]);
-
-                    break;
-                case "--remap-map":
-                    if (remapping == null) {
-                        throw new RuntimeException(
-                                "--remap-column must be specified first");
-                    }
-
-                    i++;
-                    remapping.setMap(loadMap(Paths.get(args[i])));
 
                     break;
                 case "--separator":
@@ -181,8 +120,6 @@ public class Main {
 
         ConversionConfig config = new DefaultConversionConfig.DefaultConversionConfigBuilder()
                 .setColumns(Arrays.asList(columns))
-                .setFilters(filters)
-                .setRemappings(remappings)
                 .setSeparator(separator)
                 .setTrim(trimValues)
                 .setJoin(join)

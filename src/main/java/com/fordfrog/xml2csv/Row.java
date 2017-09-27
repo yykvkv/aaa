@@ -2,6 +2,7 @@ package com.fordfrog.xml2csv;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -40,6 +41,20 @@ public class Row implements Iterable<String> {
 
     public int getNumberOfColumns() {
         return values.size();
+    }
+
+    public List<String> getTrimmedValues() {
+        List<String> trimmed = new ArrayList<>(values.size());
+        for (String value  : values)
+            trimmed.add(CsvUtils.quoteString(value.trim()));
+        return trimmed;
+    }
+
+    public List<String> getValues() {
+        List<String> quoted = new ArrayList<>(values.size());
+        for (String value  : values)
+            quoted.add(CsvUtils.quoteString(value));
+        return quoted;
     }
 
     @Override

@@ -194,7 +194,6 @@ public class ConvertorTest {
     }
 
     @Test
-    @Ignore
     public void testHandleRealWorldScenario() throws Throwable {
         String input = contentLoader.loadContent("/input-real.xml");
         String expected = contentLoader.loadContent("/output-real.csv");

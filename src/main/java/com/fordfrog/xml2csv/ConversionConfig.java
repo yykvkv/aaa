@@ -6,10 +6,6 @@ public interface ConversionConfig {
 
     List<String> getColumns();
 
-    Filters getFilters();
-
-    Remappings getRemappings();
-
     char getSeparator();
 
     boolean shouldTrim();
