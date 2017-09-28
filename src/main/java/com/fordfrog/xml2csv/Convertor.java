@@ -137,10 +137,7 @@ public class Convertor {
 
     private void writeHeader(final Writer writer) {
         try {
-            List<String> quoted = new ArrayList<>(columns.size());
-            for (String column : columns)
-                quoted.add(CsvUtils.quoteString(column));
-            writer.append(StringUtils.join(quoted, separator));
+            writer.append(StringUtils.join(columns, separator));
             writer.append(System.lineSeparator());
         } catch (IOException e) {
             throw new Xml2CsvException(e);

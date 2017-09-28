@@ -1,2 +1,2 @@
-"item[@type='customer']/value1";"item[@type='customer']/value2"
-"Michael Ruocco";"32"
+item[@type='customer']/value1;item[@type='customer']/value2
+Michael Ruocco;32

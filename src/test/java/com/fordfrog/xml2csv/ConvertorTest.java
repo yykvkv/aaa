@@ -166,7 +166,7 @@ public class ConvertorTest {
     @Test
     public void testConvertNewLines() throws Throwable {
         String input = "<r><i><v>1\n1</v></i></r>";
-        String expected = "\"v\"\n\"1\n1\"\n";
+        String expected = "v\n1\n1\n";
         ConversionConfig config = new DefaultConversionConfigBuilder()
                 .setColumns(Collections.singletonList("v"))
                 .setItemName("/r/i")
@@ -181,7 +181,7 @@ public class ConvertorTest {
     @Test
     public void testConvertNewLinesBetweenXMLEscape() throws Throwable {
         String input = "<r><i><v>&lt;p /&gt;\n&lt;p /&gt;</v></i></r>";
-        String expected = "\"v\"\n\"<p />\n<p />\"\n";
+        String expected = "v\n<p />\n<p />\n";
         ConversionConfig config = new DefaultConversionConfigBuilder()
                 .setColumns(Collections.singletonList("v"))
                 .setItemName("/r/i")

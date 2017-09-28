@@ -1,2 +1,2 @@
-"value[@type='user']";"value[@type='customer']"
-"MRUOC";"Michael Ruocco"
+value[@type='user'];value[@type='customer']
+MRUOC;Michael Ruocco

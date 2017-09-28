@@ -19,11 +19,9 @@ public class Row implements Iterable<String> {
 
     public void join(int index, String value) {
         String appendedValue = values.get(index);
-        //System.out.println("join started |" + appendedValue + "| value |" + value + "| " + StringUtils.isEmpty(value) + " len " + value.length());
         if (!StringUtils.isEmpty(appendedValue))
             appendedValue += ", ";
         appendedValue += value;
-        //System.out.println("join completed " + appendedValue);
         values.set(index, appendedValue);
     }
 
@@ -64,15 +62,12 @@ public class Row implements Iterable<String> {
     private List<String> getTrimmedValues() {
         List<String> trimmed = new ArrayList<>(values.size());
         for (String value  : values)
-            trimmed.add(CsvUtils.quoteString(value.trim()));
+            trimmed.add(value.trim());
         return trimmed;
     }
 
     private List<String> getRawValues() {
-        List<String> quoted = new ArrayList<>(values.size());
-        for (String value  : values)
-            quoted.add(CsvUtils.quoteString(value));
-        return quoted;
+        return new ArrayList<>(values);
     }
 
     private static List<String> initialiseValues(int numberOfColumns) {
