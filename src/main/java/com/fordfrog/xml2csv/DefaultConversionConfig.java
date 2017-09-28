@@ -46,6 +46,8 @@ public class DefaultConversionConfig implements ConversionConfig {
 
     public static class DefaultConversionConfigBuilder {
 
+        private final ItemNameValidator itemNameValidator = new ItemNameValidator();
+
         private List<String> columns = new ArrayList<>();
         private char separator = ';';
         private boolean trim = false;
@@ -78,6 +80,7 @@ public class DefaultConversionConfig implements ConversionConfig {
         }
 
         public ConversionConfig build() {
+            itemNameValidator.isValid(itemName);
             return new DefaultConversionConfig(this);
         }
 

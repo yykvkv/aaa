@@ -9,9 +9,11 @@ import java.util.List;
 
 public class Row implements Iterable<String> {
 
+    private final boolean shouldTrim;
     private final List<String> values;
 
-    public Row(int numberOfColumns) {
+    public Row(boolean shouldTrim, int numberOfColumns) {
+        this.shouldTrim = shouldTrim;
         this.values = initialiseValues(numberOfColumns);
     }
 
@@ -43,18 +45,10 @@ public class Row implements Iterable<String> {
         return values.size();
     }
 
-    public List<String> getTrimmedValues() {
-        List<String> trimmed = new ArrayList<>(values.size());
-        for (String value  : values)
-            trimmed.add(CsvUtils.quoteString(value.trim()));
-        return trimmed;
-    }
-
     public List<String> getValues() {
-        List<String> quoted = new ArrayList<>(values.size());
-        for (String value  : values)
-            quoted.add(CsvUtils.quoteString(value));
-        return quoted;
+        if (shouldTrim)
+            return getTrimmedValues();
+        return getRawValues();
     }
 
     @Override
@@ -65,6 +59,20 @@ public class Row implements Iterable<String> {
     @Override
     public String toString() {
         return values.toString();
+    }
+
+    private List<String> getTrimmedValues() {
+        List<String> trimmed = new ArrayList<>(values.size());
+        for (String value  : values)
+            trimmed.add(CsvUtils.quoteString(value.trim()));
+        return trimmed;
+    }
+
+    private List<String> getRawValues() {
+        List<String> quoted = new ArrayList<>(values.size());
+        for (String value  : values)
+            quoted.add(CsvUtils.quoteString(value));
+        return quoted;
     }
 
     private static List<String> initialiseValues(int numberOfColumns) {

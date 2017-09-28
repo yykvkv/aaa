@@ -11,124 +11,140 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
-import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 public class Convertor {
 
-    private final ConversionConfig config;
+    private static final Charset UTF8 = Charset.forName("UTF8");
+
+    private final InputStreamConverter inputStreamConverter = new InputStreamConverter();
+    private final XmlStreamReaderConverter xmlStreamReaderConverter = new XmlStreamReaderConverter();
+
+    private final List<String> columns;
+    private final String itemName;
+    private final boolean shouldJoin;
+    private final boolean shouldTrim;
+    private final char separator;
+
+    private int columnIndex = -1;
+    private StringBuilder currentPath = new StringBuilder();
+    private Row row;
 
     public Convertor(ConversionConfig config) {
-        this.config = config;
+        this.columns = config.getColumns();
+        this.itemName = config.getItemName();
+        this.shouldJoin = config.shouldJoin();
+        this.shouldTrim = config.shouldTrim();
+        this.separator = config.getSeparator();
     }
 
     public void convert(final Path inputFile, final Path outputFile) {
-        try (final InputStream inputStream = Files.newInputStream(inputFile);
-             final Writer writer = Files.newBufferedWriter(
-                     outputFile, Charset.forName("UtF-8"))) {
-            convert(inputStream, writer);
-        } catch (final IOException ex) {
-            throw new RuntimeException("IO operation failed", ex);
+        try (final InputStream inputStream = Files.newInputStream(inputFile)) {
+             try (final Writer writer = Files.newBufferedWriter(outputFile, UTF8)) {
+                 convert(inputStream, writer);
+             }
+        } catch (final IOException e) {
+            throw new Xml2CsvException(e);
         }
     }
 
     public String convert(String input) throws IOException {
         StringWriter writer = new StringWriter();
-        InputStream in = IOUtils.toInputStream(input, "UTF-8");
+        InputStream in = IOUtils.toInputStream(input, UTF8.toString());
         convert(in, writer);
         return writer.toString();
     }
 
     public void convert(final InputStream inputStream, final Writer writer) {
-        String itemName = config.getItemName();
-        final XMLInputFactory xMLInputFactory = XMLInputFactory.newInstance();
+        writeHeader(writer);
+        writeData(inputStream, writer);
+    }
 
-        if (itemName.trim().isEmpty()) {
-            throw new IllegalArgumentException("itemName is an empty string. ");
-        }
-
-        if (itemName.trim().length() != 1 && itemName.endsWith("/")) {
-            throw new IllegalArgumentException(
-                    "itemName cannot end with a shash (/).");
-        }
-
+    public void writeData(final InputStream inputStream, final Writer writer) {
         try {
-            writeHeader(writer);
-            final XMLStreamReader reader = xMLInputFactory.createXMLStreamReader(inputStream);
-            List<String> columns = config.getColumns();
-            StringBuilder currentPath = new StringBuilder();
-            Row row = new Row(columns.size());
-            int columnIndex = -1;
-            while (reader.hasNext()) {
-                int next = reader.next();
-                switch (next) {
-                    case XMLStreamReader.START_ELEMENT:
-                        String name = getLocalName(reader);
-                        currentPath.append("/").append(name);
-                        String toFind = currentPath.toString().replace(config.getItemName() + "/", "");
-                        columnIndex = columns.indexOf(toFind);
-                        if (columnIndex == -1 && toFind.contains("@")) {
-                            toFind = toFind.substring(0, toFind.indexOf("["));
-                            columnIndex = columns.indexOf(toFind);
-                        }
-                        if (currentPath.toString().equals(config.getItemName())) {
-                            row = new Row(columns.size());
-                        }
-                        break;
-                    case XMLStreamReader.CHARACTERS:
-                        if (columnIndex > -1) {
-                            if (config.shouldJoin()) {
-                                row.join(columnIndex, reader.getText());
-                            } else {
-                                row.append(columnIndex, reader.getText());
-                            }
-                        }
-                        break;
-                    case XMLStreamReader.END_ELEMENT:
-                        if (currentPath.toString().equals(config.getItemName()))
-                            writeRow(writer, row);
-                        columnIndex = -1;
-                        String path = currentPath.toString();
-                        if (!path.isEmpty()) {
-                            int startIndex = path.lastIndexOf("/" + reader.getLocalName());
-                            currentPath = new StringBuilder(path.substring(0, startIndex));
-                        }
-                        break;
+            final XMLStreamReader reader = inputStreamConverter.toXmlStreamReader(inputStream);
+            try {
+                currentPath = new StringBuilder();
+                row = new Row(shouldTrim, columns.size());
+                columnIndex = -1;
+                while (reader.hasNext()) {
+                    int next = reader.next();
+                    switch (next) {
+                        case XMLStreamReader.START_ELEMENT:
+                            handleStartElement(reader);
+                            break;
+                        case XMLStreamReader.CHARACTERS:
+                            handleCharacters(reader);
+                            break;
+                        case XMLStreamReader.END_ELEMENT:
+                            handleEndElement(reader, writer);
+                            break;
+                    }
                 }
+            } finally {
+                writer.close();
+                reader.close();
             }
-        } catch (final IOException ex) {
-            throw new RuntimeException("IO operation failed", ex);
-        } catch (final XMLStreamException ex) {
-            throw new RuntimeException("XML stream exception", ex);
+        } catch (XMLStreamException | IOException e) {
+            throw new Xml2CsvException(e);
         }
     }
 
-    private String getLocalName(XMLStreamReader reader) {
-        StringBuilder name = new StringBuilder(reader.getLocalName());
-        if (reader.getAttributeCount() > 0)
-            for (int a = 0; a < reader.getAttributeCount(); a++)
-                name.append("[@").append(reader.getAttributeLocalName(a)).append("='").append(reader.getAttributeValue(a)).append("']");
-        return name.toString();
+    private void handleStartElement(XMLStreamReader reader) {
+        String name = xmlStreamReaderConverter.toLocalName(reader);
+        currentPath.append("/").append(name);
+        String toFind = currentPath.toString().replace(itemName + "/", "");
+        columnIndex = columns.indexOf(toFind);
+        if (columnIndex == -1 && toFind.contains("@")) {
+            toFind = toFind.substring(0, toFind.indexOf("["));
+            columnIndex = columns.indexOf(toFind);
+        }
+        if (currentPath.toString().equals(itemName)) {
+            row = new Row(shouldTrim, columns.size());
+        }
     }
 
-    private void writeRow(Writer writer, Row row) throws IOException {
-        writer.append(StringUtils.join(extractValues(row), config.getSeparator()));
-        writer.append(System.lineSeparator());
+    private void handleCharacters(XMLStreamReader reader) {
+        if (columnIndex > -1) {
+            if (shouldJoin) {
+                row.join(columnIndex, reader.getText());
+            } else {
+                row.append(columnIndex, reader.getText());
+            }
+        }
     }
 
-    private List<String> extractValues(Row row) {
-        if (config.shouldTrim())
-            return row.getTrimmedValues();
-        return row.getValues();
+    private void handleEndElement(XMLStreamReader reader, Writer writer) {
+        if (currentPath.toString().equals(itemName))
+            writeRow(writer, row);
+        columnIndex = -1;
+        String path = currentPath.toString();
+        if (!path.isEmpty()) {
+            int startIndex = path.lastIndexOf("/" + reader.getLocalName());
+            currentPath = new StringBuilder(path.substring(0, startIndex));
+        }
     }
 
-    private void writeHeader(final Writer writer) throws IOException {
-        List<String> columns = new ArrayList<>(config.getColumns().size());
-        for (String column : config.getColumns())
-            columns.add(CsvUtils.quoteString(column));
-        writer.append(StringUtils.join(columns, config.getSeparator()));
-        writer.append(System.lineSeparator());
+    private void writeRow(Writer writer, Row row) {
+        try {
+            writer.append(StringUtils.join(row.getValues(), separator));
+            writer.append(System.lineSeparator());
+        } catch (IOException e) {
+            throw new Xml2CsvException(e);
+        }
+    }
+
+    private void writeHeader(final Writer writer) {
+        try {
+            List<String> quoted = new ArrayList<>(columns.size());
+            for (String column : columns)
+                quoted.add(CsvUtils.quoteString(column));
+            writer.append(StringUtils.join(quoted, separator));
+            writer.append(System.lineSeparator());
+        } catch (IOException e) {
+            throw new Xml2CsvException(e);
+        }
     }
 
 }
