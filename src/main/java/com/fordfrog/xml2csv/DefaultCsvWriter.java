@@ -5,7 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.List;
+import java.util.Collection;
 
 public class DefaultCsvWriter implements CsvWriter {
 
@@ -27,7 +27,7 @@ public class DefaultCsvWriter implements CsvWriter {
     }
 
     @Override
-    public void write(List<String> values) {
+    public void write(Collection<String> values) {
         try {
             writer.append(StringUtils.join(values, separator));
             writer.append(System.lineSeparator());

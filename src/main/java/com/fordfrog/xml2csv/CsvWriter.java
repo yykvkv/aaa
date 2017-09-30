@@ -1,9 +1,11 @@
 package com.fordfrog.xml2csv;
 
-import java.util.List;
+import java.util.Collection;
 
 public interface CsvWriter {
+
     void write(Row row);
 
-    void write(List<String> values);
+    void write(Collection<String> values);
+
 }

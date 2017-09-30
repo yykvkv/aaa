@@ -1,6 +1,7 @@
 package com.fordfrog.xml2csv;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,7 +10,7 @@ import java.io.Writer;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.Map;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -20,14 +21,14 @@ public class Convertor {
     private final InputStreamConverter inputStreamConverter = new InputStreamConverter();
     private final XmlStreamReaderConverter xmlStreamReaderConverter = new XmlStreamReaderConverter();
 
-    private final List<String> columns;
+    private final Map<String, Integer> columns;
     private final String itemName;
     private final boolean shouldJoin;
     private final boolean shouldTrim;
     private final char separator;
 
     private int columnIndex;
-    private StringBuilder currentPath;
+    private String currentPath;
     private Row row;
 
     public Convertor(ConversionConfig config) {
@@ -61,14 +62,14 @@ public class Convertor {
     }
 
     private void writeHeader(CsvWriter writer) {
-        writer.write(columns);
+        writer.write(columns.keySet());
     }
 
     private void writeData(final InputStream inputStream, CsvWriter writer) {
         try {
             final XMLStreamReader reader = inputStreamConverter.toXmlStreamReader(inputStream);
             try {
-                currentPath = new StringBuilder();
+                currentPath = "";
                 row = new Row(shouldTrim, columns.size());
                 columnIndex = -1;
                 while (reader.hasNext()) {
@@ -95,14 +96,16 @@ public class Convertor {
 
     private void handleStartElement(XMLStreamReader reader) {
         String name = xmlStreamReaderConverter.toLocalName(reader);
-        currentPath.append("/").append(name);
-        String toFind = currentPath.toString().replace(itemName + "/", "");
-        columnIndex = columns.indexOf(toFind);
-        if (columnIndex == -1 && toFind.contains("@")) {
+        currentPath += "/" + name;
+        String toFind = currentPath.replace(itemName + "/", "");
+        if (columns.containsKey(toFind)) {
+            columnIndex = columns.get(toFind);
+        } else if (toFind.contains("@")) {
             toFind = toFind.substring(0, toFind.indexOf("["));
-            columnIndex = columns.indexOf(toFind);
+            if (columns.containsKey(toFind))
+                columnIndex = columns.get(toFind);
         }
-        if (currentPath.toString().equals(itemName)) {
+        if (currentPath.equals(itemName)) {
             row = new Row(shouldTrim, columns.size());
         }
     }
@@ -118,13 +121,13 @@ public class Convertor {
     }
 
     private void handleEndElement(XMLStreamReader reader, CsvWriter writer) {
-        if (currentPath.toString().equals(itemName))
+        if (currentPath.equals(itemName)) {
             writer.write(row);
+        }
         columnIndex = -1;
-        String path = currentPath.toString();
-        if (!path.isEmpty()) {
-            int startIndex = path.lastIndexOf("/" + reader.getLocalName());
-            currentPath = new StringBuilder(path.substring(0, startIndex));
+        if (!StringUtils.isEmpty(currentPath)) {
+            int startIndex = currentPath.lastIndexOf("/" + reader.getLocalName());
+            currentPath = currentPath.substring(0, startIndex);
         }
     }
 

@@ -1,10 +1,10 @@
 package com.fordfrog.xml2csv;
 
-import java.util.List;
+import java.util.Map;
 
 public interface ConversionConfig {
 
-    List<String> getColumns();
+    Map<String, Integer> getColumns();
 
     char getSeparator();
 

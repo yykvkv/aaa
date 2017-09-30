@@ -1,5 +1,7 @@
 package com.fordfrog.xml2csv;
 
+import com.fordfrog.xml2csv.DefaultConversionConfig.DefaultConversionConfigBuilder;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -83,7 +85,7 @@ public class Main {
         Objects.requireNonNull(itemName, "--item-name argument must be "
                 + "specified, example: --item-name /root/item");
 
-        ConversionConfig config = new DefaultConversionConfig.DefaultConversionConfigBuilder()
+        ConversionConfig config = new DefaultConversionConfigBuilder()
                 .setColumns(Arrays.asList(columns))
                 .setSeparator(separator)
                 .setTrim(trimValues)

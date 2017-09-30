@@ -1,11 +1,10 @@
 package com.fordfrog.xml2csv;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class DefaultConversionConfig implements ConversionConfig {
 
-    private final List<String> columns;
+    private final Map<String, Integer> columns;
     private final char separator;
     private final boolean trim;
     private final boolean join;
@@ -20,7 +19,7 @@ public class DefaultConversionConfig implements ConversionConfig {
     }
 
     @Override
-    public List<String> getColumns() {
+    public Map<String, Integer> getColumns() {
         return columns;
     }
 
@@ -46,14 +45,14 @@ public class DefaultConversionConfig implements ConversionConfig {
 
     public static class DefaultConversionConfigBuilder {
 
-        private List<String> columns = new ArrayList<>();
+        private Map<String, Integer> columns;
         private char separator = ';';
         private boolean trim = false;
         private boolean join = false;
         private String itemName;
 
         public DefaultConversionConfigBuilder setColumns(List<String> columns) {
-            this.columns = columns;
+            this.columns = ColumnsConverter.toMap(columns);
             return this;
         }
 
