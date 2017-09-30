@@ -4,10 +4,9 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
-public class Row implements Iterable<String> {
+public class Row {
 
     private final boolean shouldTrim;
     private final List<String> values;
@@ -18,11 +17,11 @@ public class Row implements Iterable<String> {
     }
 
     public void join(int index, String value) {
-        String appendedValue = values.get(index);
-        if (!StringUtils.isEmpty(appendedValue))
-            appendedValue += ", ";
-        appendedValue += value;
-        values.set(index, appendedValue);
+        StringBuilder joined = new StringBuilder(values.get(index));
+        if (!StringUtils.isEmpty(joined.toString()))
+            joined.append(",");
+        joined.append(value);
+        values.set(index, joined.toString());
     }
 
     public void append(int index, String value) {
@@ -31,32 +30,10 @@ public class Row implements Iterable<String> {
         values.set(index, appendedValue);
     }
 
-    public void set(int index, String value) {
-        values.set(index, value);
-    }
-
-    public String get(int index) {
-        return values.get(index);
-    }
-
-    public int getNumberOfColumns() {
-        return values.size();
-    }
-
     public List<String> getValues() {
         if (shouldTrim)
             return getTrimmedValues();
         return getRawValues();
-    }
-
-    @Override
-    public Iterator<String> iterator() {
-        return values.iterator();
-    }
-
-    @Override
-    public String toString() {
-        return values.toString();
     }
 
     private List<String> getTrimmedValues() {
