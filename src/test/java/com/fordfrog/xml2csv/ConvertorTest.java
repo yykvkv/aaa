@@ -11,6 +11,8 @@ import org.junit.Test;
 import uk.co.mruoc.properties.ClasspathFileContentLoader;
 import uk.co.mruoc.properties.FileContentLoader;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 public class ConvertorTest {
 
     private final FileContentLoader contentLoader = new ClasspathFileContentLoader();
@@ -27,7 +29,7 @@ public class ConvertorTest {
 
         String output = convertor.convert(input);
 
-        Assert.assertEquals(expected, output);
+        assertThat(output).isEqualTo(expected);
     }
 
     @Test
@@ -43,7 +45,7 @@ public class ConvertorTest {
 
         String output = convertor.convert(input);
 
-        Assert.assertEquals(expected, output);
+        assertThat(output).isEqualTo(expected);
     }
 
     @Test
@@ -60,7 +62,7 @@ public class ConvertorTest {
 
         String output = convertor.convert(input);
 
-        Assert.assertEquals(expected, output);
+        assertThat(output).isEqualTo(expected);
     }
 
     @Test
@@ -76,7 +78,7 @@ public class ConvertorTest {
 
         String output = convertor.convert(input);
 
-        Assert.assertEquals(expected, output);
+        assertThat(output).isEqualTo(expected);
     }
 
     @Test
@@ -93,7 +95,7 @@ public class ConvertorTest {
 
         String output = convertor.convert(input);
 
-        Assert.assertEquals(expected, output);
+        assertThat(output).isEqualTo(expected);
     }
 
     @Test
@@ -108,7 +110,7 @@ public class ConvertorTest {
 
         String output = convertor.convert(input);
 
-        Assert.assertEquals(expected, output);
+        assertThat(output).isEqualTo(expected);
     }
 
     @Test
@@ -128,7 +130,7 @@ public class ConvertorTest {
 
         String output = convertor.convert(input);
 
-        Assert.assertEquals(expected, output);
+        assertThat(output).isEqualTo(expected);
     }
 
     @Test
@@ -144,7 +146,7 @@ public class ConvertorTest {
 
         String output = convertor.convert(input);
 
-        Assert.assertEquals(expected, output);
+        assertThat(output).isEqualTo(expected);
     }
 
     @Test
@@ -160,7 +162,7 @@ public class ConvertorTest {
 
         String output = convertor.convert(input);
 
-        Assert.assertEquals(expected, output);
+        assertThat(output).isEqualTo(expected);
     }
 
     @Test
@@ -175,7 +177,7 @@ public class ConvertorTest {
 
         String output = convertor.convert(input);
 
-        Assert.assertEquals(expected, output);
+        assertThat(output).isEqualTo(expected);
     }
 
     @Test
@@ -190,7 +192,7 @@ public class ConvertorTest {
 
         String output = convertor.convert(input);
 
-        Assert.assertEquals(expected, output);
+        assertThat(output).isEqualTo(expected);
     }
 
     @Test
@@ -232,7 +234,7 @@ public class ConvertorTest {
 
         String output = convertor.convert(input);
 
-        Assert.assertEquals(expected, output);
+        assertThat(output).isEqualTo(expected);
     }
 
 }

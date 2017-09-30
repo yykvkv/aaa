@@ -1,7 +1,6 @@
 package com.fordfrog.xml2csv;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,8 +26,8 @@ public class Convertor {
     private final boolean shouldTrim;
     private final char separator;
 
-    private int columnIndex = -1;
-    private StringBuilder currentPath = new StringBuilder();
+    private int columnIndex;
+    private StringBuilder currentPath;
     private Row row;
 
     public Convertor(ConversionConfig config) {
@@ -39,29 +38,33 @@ public class Convertor {
         this.separator = config.getSeparator();
     }
 
+    public String convert(String input) {
+        InputStream inputStream = IOUtils.toInputStream(input, UTF8);
+        StringWriter writer = new StringWriter();
+        convert(inputStream, new DefaultCsvWriter(writer, separator));
+        return writer.toString();
+    }
+
     public void convert(final Path inputFile, final Path outputFile) {
         try (final InputStream inputStream = Files.newInputStream(inputFile)) {
-             try (final Writer writer = Files.newBufferedWriter(outputFile, UTF8)) {
-                 convert(inputStream, writer);
-             }
+            try (final Writer writer = Files.newBufferedWriter(outputFile, UTF8)) {
+                convert(inputStream, new DefaultCsvWriter(writer, separator));
+            }
         } catch (final IOException e) {
             throw new Xml2CsvException(e);
         }
     }
 
-    public String convert(String input) throws IOException {
-        StringWriter writer = new StringWriter();
-        InputStream in = IOUtils.toInputStream(input, UTF8.toString());
-        convert(in, writer);
-        return writer.toString();
-    }
-
-    public void convert(final InputStream inputStream, final Writer writer) {
+    public void convert(final InputStream inputStream, CsvWriter writer) {
         writeHeader(writer);
         writeData(inputStream, writer);
     }
 
-    public void writeData(final InputStream inputStream, final Writer writer) {
+    private void writeHeader(CsvWriter writer) {
+        writer.write(columns);
+    }
+
+    private void writeData(final InputStream inputStream, CsvWriter writer) {
         try {
             final XMLStreamReader reader = inputStreamConverter.toXmlStreamReader(inputStream);
             try {
@@ -83,10 +86,9 @@ public class Convertor {
                     }
                 }
             } finally {
-                writer.close();
                 reader.close();
             }
-        } catch (XMLStreamException | IOException e) {
+        } catch (XMLStreamException e) {
             throw new Xml2CsvException(e);
         }
     }
@@ -115,32 +117,14 @@ public class Convertor {
         }
     }
 
-    private void handleEndElement(XMLStreamReader reader, Writer writer) {
+    private void handleEndElement(XMLStreamReader reader, CsvWriter writer) {
         if (currentPath.toString().equals(itemName))
-            writeRow(writer, row);
+            writer.write(row);
         columnIndex = -1;
         String path = currentPath.toString();
         if (!path.isEmpty()) {
             int startIndex = path.lastIndexOf("/" + reader.getLocalName());
             currentPath = new StringBuilder(path.substring(0, startIndex));
-        }
-    }
-
-    private void writeRow(Writer writer, Row row) {
-        try {
-            writer.append(StringUtils.join(row.getValues(), separator));
-            writer.append(System.lineSeparator());
-        } catch (IOException e) {
-            throw new Xml2CsvException(e);
-        }
-    }
-
-    private void writeHeader(final Writer writer) {
-        try {
-            writer.append(StringUtils.join(columns, separator));
-            writer.append(System.lineSeparator());
-        } catch (IOException e) {
-            throw new Xml2CsvException(e);
         }
     }
 

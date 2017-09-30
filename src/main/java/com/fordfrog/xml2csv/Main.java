@@ -1,54 +1,19 @@
-/**
- * Copyright 2012 Miroslav Šulc
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- */
 package com.fordfrog.xml2csv;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.MessageFormat;
 import java.util.*;
 
-/**
- * Main class.
- *
- * @author fordfrog
- */
 public class Main {
 
-    /**
-     * Main method.
-     *
-     * @param args
-     */
-    @SuppressWarnings("AssignmentToForLoopParameter")
     public static void main(final String[] args) {
         if (args == null || args.length == 0) {
             printUsage();
-
             return;
         }
 
@@ -129,10 +94,6 @@ public class Main {
         convertor.convert(inputFile, outputFile);
     }
 
-    /**
-     * Prints application usage information.
-     */
-    @SuppressWarnings("UseOfSystemOutOrSystemErr")
     private static void printUsage() {
         try (final InputStream inputStream = Main.class.getResourceAsStream(
                 "/usage.txt");
@@ -150,60 +111,4 @@ public class Main {
         }
     }
 
-    /**
-     * Loads list of values from specified file.
-     *
-     * @param file file path
-     *
-     * @return collection of loaded values
-     */
-    private static Collection<String> loadValues(final Path file) {
-        @SuppressWarnings("CollectionWithoutInitialCapacity")
-        final Collection<String> values = new HashSet<>();
-
-        try (final BufferedReader reader = Files.newBufferedReader(
-                file, Charset.forName("UTF-8"))) {
-            String line = reader.readLine();
-
-            while (line != null) {
-                values.add(line);
-                line = reader.readLine();
-            }
-        } catch (final IOException ex) {
-            throw new RuntimeException("Failed to load values", ex);
-        }
-
-        return values;
-    }
-
-    /**
-     * Loads key value pairs from specified file. Values must be separated with
-     * comma.
-     *
-     * @param file file path
-     *
-     * @return map of loaded key value pairs
-     */
-    private static Map<String, String> loadMap(final Path file) {
-        @SuppressWarnings("CollectionWithoutInitialCapacity")
-        final Map<String, String> map = new HashMap<>();
-
-        try (final BufferedReader reader = Files.newBufferedReader(
-                file, Charset.forName("UTF-8"))) {
-            String line = reader.readLine();
-
-            while (line != null) {
-                if (!line.isEmpty()) {
-                    final String[] pair = CsvUtils.parseValues(line);
-                    map.put(pair[0], pair.length > 1 ? pair[1] : "");
-                }
-
-                line = reader.readLine();
-            }
-        } catch (final IOException ex) {
-            throw new RuntimeException("Failed to load map", ex);
-        }
-
-        return map;
-    }
 }
