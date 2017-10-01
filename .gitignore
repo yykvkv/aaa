@@ -1,4 +1,6 @@
-target/
-nbactions.xml
+.gradle
 .idea
+build
+out
 *.iml
+my-gradle.properties

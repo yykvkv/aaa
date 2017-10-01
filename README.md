@@ -1,4 +1,4 @@
-# xml2csv
+# Xml To Csv
 
 Simple XML to CSV conversion utility.
 
@@ -8,21 +8,21 @@ It converts any XML file to CSV:
 
     <root>
         <item>
-        	<subitem1>
-	            <value1>...</value1>
-	            <value2>...</value2>
-        	</subitem1>
-        	<subitem2>
-	            <value3>...</value3>
-        	</subitem2>
+            <subitem1>
+                <value1>...</value1>
+                <value2>...</value2>
+            </subitem1>
+            <subitem2>
+                <value3>...</value3>
+            </subitem2>
         </item>
         <item>
             <subitem1>
-	            <value1>...</value1>
-        	</subitem1>
-        	<subitem2>
-	            <value3>...</value3>
-        	</subitem2>
+                <value1>...</value1>
+            </subitem1>
+            <subitem2>
+                <value3>...</value3>
+            </subitem2>
         </item>
         ...
     </root>
@@ -31,10 +31,22 @@ Choose any XML element using XPath expression in order to select XML elements
 for conversion to CSV file. Only child elements that match the expression will
 be converted.
 
-## Prerequisities
+Note the library does not support all xml, you can do simple matching on element
+names, e.g. from the above example you could select value three using
+/root/item/subitem2/value3. You can also select specific elements using attributes
+that are attached (note, if you do this you must specify all attributes on the element
+rather than just one, this is a current limitation of the implementation.)
 
-* JRE or JDK 7+
-* Apache Maven 3+ (just in case you want to compile the application yourself)
+## Usage
+
+To use the library from a program you will need to add a dependency to your project. In
+gradle you would do this by adding the following to your build.gradle file:
+
+```
+dependencies {
+    compile 'com.github.michaelruocco:xml-to-csv:1.0.0'
+}
+```
 
 ## Compilation
 
