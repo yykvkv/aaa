@@ -121,10 +121,10 @@ public class ConvertorTest {
     }
 
     @Test
-    public void testHandleRealWorldScenario() throws Throwable {
-        String input = contentLoader.loadContent("/input-real.xml");
-        String expected = contentLoader.loadContent("/output-real.csv");
-        Convertor convertor = new Convertor(new RealWorldConfig());
+    public void testHandleRealWorldScenarioArm2() throws Throwable {
+        String input = contentLoader.loadContent("/input-real-arm2.xml");
+        String expected = contentLoader.loadContent("/output-real-arm2.csv");
+        Convertor convertor = new Convertor(new Arm2Config());
 
         String output = convertor.convert(input);
 

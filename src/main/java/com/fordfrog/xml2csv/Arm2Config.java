@@ -3,7 +3,7 @@ package com.fordfrog.xml2csv;
 import java.util.Arrays;
 import java.util.Map;
 
-public class RealWorldConfig implements ConversionConfig {
+public class Arm2Config implements ConversionConfig {
 
     @Override
     public Map<String, Integer> getColumns() {
@@ -21,6 +21,8 @@ public class RealWorldConfig implements ConversionConfig {
                 "CustomerName",
                 "Address[@type='Customer']/AddressLine[@sequence='1']",
                 "Address[@type='Customer']/AddressLine[@sequence='2']",
+                "Address[@type='Customer']/AddressLine[@sequence='3']",
+                "Address[@type='Customer']/AddressLine[@sequence='4']",
                 "Address[@type='Customer']/PostalCode",
                 "CreditStatus",
                 "DueDate",
@@ -28,8 +30,9 @@ public class RealWorldConfig implements ConversionConfig {
                 "POAReference",
                 "TransactionID",
                 "Region",
-                //email
-                //credit control clerk
+                "Contact[@type='Customer']/Email",
+                "Contact[@type='Company']/Name",
+                "Contact[@type='Company']/Email",
                 "LegalStatus")
         );
     }
