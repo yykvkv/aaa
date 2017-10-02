@@ -12,7 +12,7 @@ public class DeepConfig implements ConversionConfig {
 
     @Override
     public String getSeparator() {
-        return DEFAULT_SEPARATOR;
+        return SEMI_COLON;
     }
 
     @Override
@@ -26,7 +26,7 @@ public class DeepConfig implements ConversionConfig {
     }
 
     @Override
-    public String getItemName() {
+    public String getRowItemName() {
         return "/root/item0/item1/item2";
     }
 

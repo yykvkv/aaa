@@ -2,6 +2,7 @@ package com.fordfrog.xml2csv.cli;
 
 import com.fordfrog.xml2csv.ColumnsConverter;
 import com.fordfrog.xml2csv.ConversionConfig;
+import com.fordfrog.xml2csv.DefaultSettings;
 import com.fordfrog.xml2csv.PathProvider;
 
 import java.nio.file.Path;
@@ -14,7 +15,7 @@ public class Arguments implements ConversionConfig, PathProvider {
     private final String separator;
     private final boolean trim;
     private final boolean join;
-    private final String itemName;
+    private final String rowItemName;
     private final String inputFilePath;
     private final String outputFilePath;
 
@@ -23,7 +24,7 @@ public class Arguments implements ConversionConfig, PathProvider {
         this.separator = builder.separator;
         this.trim = builder.trim;
         this.join = builder.join;
-        this.itemName = builder.itemName;
+        this.rowItemName = builder.itemName;
         this.inputFilePath = builder.inputFilePath;
         this.outputFilePath = builder.outputFilePath;
     }
@@ -49,8 +50,8 @@ public class Arguments implements ConversionConfig, PathProvider {
     }
 
     @Override
-    public String getItemName() {
-        return itemName;
+    public String getRowItemName() {
+        return rowItemName;
     }
 
     @Override
@@ -78,7 +79,7 @@ public class Arguments implements ConversionConfig, PathProvider {
     public static class ArgumentsBuilder {
 
         private String columns;
-        private String separator = DEFAULT_SEPARATOR;
+        private String separator = DefaultSettings.SEPARATOR;
         private boolean trim = false;
         private boolean join = false;
         private String itemName;

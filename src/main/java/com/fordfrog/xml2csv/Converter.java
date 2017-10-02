@@ -30,7 +30,7 @@ public class Converter {
 
     public Converter(ConversionConfig config) {
         this.columns = config.getColumns();
-        this.itemName = config.getItemName();
+        this.itemName = config.getRowItemName();
         this.shouldJoin = config.shouldJoin();
         this.shouldTrim = config.shouldTrim();
         this.separator = config.getSeparator();
@@ -114,6 +114,7 @@ public class Converter {
     }
 
     private void handleCharacters(XMLStreamReader reader) {
+
         if (columnIndex > -1) {
             if (shouldJoin) {
                 row.join(columnIndex, reader.getText());

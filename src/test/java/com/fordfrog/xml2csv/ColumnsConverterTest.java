@@ -16,7 +16,6 @@ public class ColumnsConverterTest {
 
         Map<String, Integer> map = ColumnsConverter.toMap(columns);
 
-        System.out.println(map);
         assertThat(map.get("column A")).isEqualTo(0);
         assertThat(map.get("column B")).isEqualTo(1);
         assertThat(map.get("column C")).isEqualTo(2);
@@ -28,7 +27,6 @@ public class ColumnsConverterTest {
 
         Map<String, Integer> map = ColumnsConverter.toMap(columns);
 
-        System.out.println(map);
         assertThat(map.get("column A")).isEqualTo(0);
         assertThat(map.get("column B")).isEqualTo(1);
         assertThat(map.get("column C")).isEqualTo(2);

@@ -7,12 +7,12 @@ public class SimpleConfig implements ConversionConfig {
 
     @Override
     public Map<String, Integer> getColumns() {
-        return ColumnsConverter.toMap(Arrays.asList("value1", "value2", "value3"));
+        return ColumnsConverter.toMap("value1, value2, value3");
     }
 
     @Override
     public String getSeparator() {
-        return DEFAULT_SEPARATOR;
+        return SEMI_COLON;
     }
 
     @Override
@@ -26,7 +26,7 @@ public class SimpleConfig implements ConversionConfig {
     }
 
     @Override
-    public String getItemName() {
+    public String getRowItemName() {
         return "/root/item";
     }
 

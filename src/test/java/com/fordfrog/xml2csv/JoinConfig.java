@@ -26,7 +26,7 @@ public class JoinConfig implements ConversionConfig {
     }
 
     @Override
-    public String getItemName() {
+    public String getRowItemName() {
         return "/root/item";
     }
 

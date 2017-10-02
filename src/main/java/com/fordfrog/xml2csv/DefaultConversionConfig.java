@@ -39,14 +39,14 @@ public class DefaultConversionConfig implements ConversionConfig {
     }
 
     @Override
-    public String getItemName() {
+    public String getRowItemName() {
         return itemName;
     }
 
     public static class DefaultConversionConfigBuilder {
 
         private Map<String, Integer> columns;
-        private String separator = DEFAULT_SEPARATOR;
+        private String separator = DefaultSettings.SEPARATOR;
         private boolean trim = false;
         private boolean join = false;
         private String itemName;

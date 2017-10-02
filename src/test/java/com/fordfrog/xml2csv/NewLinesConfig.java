@@ -13,7 +13,7 @@ public class NewLinesConfig implements ConversionConfig {
 
     @Override
     public String getSeparator() {
-        return DEFAULT_SEPARATOR;
+        return SEMI_COLON;
     }
 
     @Override
@@ -27,7 +27,7 @@ public class NewLinesConfig implements ConversionConfig {
     }
 
     @Override
-    public String getItemName() {
+    public String getRowItemName() {
         return "/r/i";
     }
 

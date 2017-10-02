@@ -1,5 +1,6 @@
 package com.fordfrog.xml2csv.cli;
 
+import com.fordfrog.xml2csv.DefaultSettings;
 import com.fordfrog.xml2csv.cli.Arguments.ArgumentsBuilder;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -61,7 +62,7 @@ public class ArgumentParser {
     }
 
     private String extractSeparator(CommandLine commandLine) {
-        return commandLine.getOptionValue(options.getSeparator());
+        return commandLine.getOptionValue(options.getSeparator(), DefaultSettings.SEPARATOR);
     }
 
     private boolean extractJoin(CommandLine commandLine) {

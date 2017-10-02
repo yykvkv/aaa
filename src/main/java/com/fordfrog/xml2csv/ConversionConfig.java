@@ -4,7 +4,7 @@ import java.util.Map;
 
 public interface ConversionConfig {
 
-    String DEFAULT_SEPARATOR = ";";
+    String SEMI_COLON = ";";
     String COMMA = ",";
     String TILDE = "~";
 
@@ -16,6 +16,6 @@ public interface ConversionConfig {
 
     boolean shouldJoin();
 
-    String getItemName();
+    String getRowItemName();
 
 }

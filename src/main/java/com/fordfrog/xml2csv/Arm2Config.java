@@ -53,7 +53,7 @@ public class Arm2Config implements ConversionConfig {
     }
 
     @Override
-    public String getItemName() {
+    public String getRowItemName() {
         return "/SyncTPAROpenItems[@schemaLocation='http://schema.infor.com/InforOAGIS/2 SyncTPAROpenItems.xsd'][@releaseID='9.2'][@versionID='2.0.1'][@systemEnvironmentCode='Production'][@languageCode='GB']/DataArea/TPAROpenItems[@type='Reconcilliation']/OpenItem";
     }
 

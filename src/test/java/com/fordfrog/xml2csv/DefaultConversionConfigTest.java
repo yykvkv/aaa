@@ -79,7 +79,7 @@ public class DefaultConversionConfigTest {
 
         ConversionConfig config = builder.build();
 
-        assertThat(config.getItemName()).isEqualTo(itemName);
+        assertThat(config.getRowItemName()).isEqualTo(itemName);
     }
 
 }

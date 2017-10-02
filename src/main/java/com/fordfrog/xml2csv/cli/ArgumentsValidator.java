@@ -10,6 +10,7 @@ public class ArgumentsValidator {
 
     public boolean isValid(Arguments arguments) {
         validateColumns(arguments);
+        validateRowItemName(arguments);
         validateInputPath(arguments);
         validateOutputPath(arguments);
         return true;
@@ -19,6 +20,13 @@ public class ArgumentsValidator {
         if (StringUtils.isEmpty(arguments.getColumnsAsString()))
             throw new Xml2CsvException("at least one column must be provided");
     }
+
+    private void validateRowItemName(Arguments arguments) {
+        if (StringUtils.isEmpty(arguments.getRowItemName())) {
+            throw new Xml2CsvException("row item name must be provided");
+        }
+    }
+
 
     private void validateInputPath(Arguments arguments) {
         String path = arguments.getInputFilePathAsString();
@@ -34,8 +42,8 @@ public class ArgumentsValidator {
         if (StringUtils.isEmpty(path))
             throw new Xml2CsvException("output file path must be provided");
 
-        if (!Files.exists(Paths.get(path)))
-            throw new Xml2CsvException("output file " + path + " does not exist");
+        //if (!Files.exists(Paths.get(path)))
+        //    throw new Xml2CsvException("output file " + path + " does not exist");
     }
 
 }
