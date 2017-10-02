@@ -15,4 +15,13 @@ public class Xml2CsvExceptionTest {
         assertThat(exception.getCause()).isEqualTo(cause);
     }
 
+    @Test
+    public void shouldReturnMessage() {
+        String message = "my message";
+
+        Xml2CsvException exception = new Xml2CsvException(message);
+
+        assertThat(exception.getMessage()).isEqualTo(message);
+    }
+
 }
