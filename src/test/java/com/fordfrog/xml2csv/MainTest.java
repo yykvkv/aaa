@@ -1,6 +1,9 @@
 package com.fordfrog.xml2csv;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.contrib.java.lang.system.SystemErrRule;
+import org.junit.contrib.java.lang.system.SystemOutRule;
 import uk.co.mruoc.properties.ClasspathFileContentLoader;
 import uk.co.mruoc.properties.FileContentLoader;
 import uk.co.mruoc.properties.FileSystemFileContentLoader;
@@ -13,7 +16,71 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class MainTest {
 
+    @Rule
+    public final SystemErrRule systemErrRule = new SystemErrRule().enableLog();
+
+    @Rule
+    public final SystemOutRule systemOutRule = new SystemOutRule().enableLog();
+
+    private static final String NEW_LINE = System.lineSeparator();
+
     private final FileContentLoader contentLoader = new ClasspathFileContentLoader();
+
+    @Test
+    public void shouldPrintErrorIfItemNameNotProvided() {
+        Main.main();
+
+        assertThat(systemErrRule.getLog()).isEqualTo("row item name must be provided" + NEW_LINE);
+    }
+
+    @Test
+    public void shouldPrintErrorIfColumnsNotProvided() {
+        Main.main("-r", "/root/item");
+
+        assertThat(systemErrRule.getLog()).isEqualTo("at least one column must be provided" + NEW_LINE);
+    }
+
+    @Test
+    public void shouldPrintErrorIfInputFilePathNotProvided() {
+        Main.main("-r", "/root/item",
+                "-c", "value1, value2, value3");
+
+        assertThat(systemErrRule.getLog()).isEqualTo("input file path must be provided" + NEW_LINE);
+    }
+
+    @Test
+    public void shouldPrintErrorIfInputFilePathDoesNotExist() {
+        Main.main("-r", "/root/item",
+                "-c", "value1, value2, value3",
+                "-i", "invalid/path");
+
+        assertThat(systemErrRule.getLog()).isEqualTo("input file invalid/path does not exist" + NEW_LINE);
+    }
+
+    @Test
+    public void shouldPrintErrorIfOutputFilePathNotProvided() {
+        PathProvider pathProvider = new StubPathProvider();
+        Path inputFilePath = pathProvider.getInputFilePath();
+
+        Main.main("-r", "/root/item",
+                "-c", "value1, value2, value3",
+                "-i", inputFilePath.toString());
+
+        assertThat(systemErrRule.getLog()).isEqualTo("output file path must be provided" + NEW_LINE);
+    }
+
+    @Test
+    public void shouldPrintErrorIfOutputFilePathParentFolderDoesNotExist() {
+        PathProvider pathProvider = new StubPathProvider();
+        Path inputFilePath = pathProvider.getInputFilePath();
+
+        Main.main("-r", "/root/item",
+                "-c", "value1, value2, value3",
+                "-i", inputFilePath.toString(),
+                "-o", "invalid/path");
+
+        assertThat(systemErrRule.getLog()).isEqualTo("output folder invalid does not exist or is not a directory" + NEW_LINE);
+    }
 
     @Test
     public void testConvertSimple() throws IOException {

@@ -26,6 +26,7 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
     testCompile group: 'org.assertj', name: 'assertj-core', version: '3.8.0'
     testCompile group: 'com.github.michaelruocco', name: 'property-loader', version: '2.0.1'
+    testCompile group: 'com.github.stefanbirkner', name: 'system-rules', version: '1.16.0'
 }
 
 jacocoTestReport {

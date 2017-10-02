@@ -4,13 +4,14 @@ import com.fordfrog.xml2csv.Xml2CsvException;
 import org.apache.commons.lang3.StringUtils;
 
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class ArgumentsValidator {
 
     public boolean isValid(Arguments arguments) {
-        validateColumns(arguments);
         validateRowItemName(arguments);
+        validateColumns(arguments);
         validateInputPath(arguments);
         validateOutputPath(arguments);
         return true;
@@ -27,7 +28,6 @@ public class ArgumentsValidator {
         }
     }
 
-
     private void validateInputPath(Arguments arguments) {
         String path = arguments.getInputFilePathAsString();
         if (StringUtils.isEmpty(path))
@@ -42,8 +42,9 @@ public class ArgumentsValidator {
         if (StringUtils.isEmpty(path))
             throw new Xml2CsvException("output file path must be provided");
 
-        //if (!Files.exists(Paths.get(path)))
-        //    throw new Xml2CsvException("output file " + path + " does not exist");
+        Path parentPath = Paths.get(path).getParent();
+        if (!Files.exists(parentPath) || !Files.isDirectory(parentPath))
+            throw new Xml2CsvException("output folder " + parentPath.toString() + " does not exist or is not a directory");
     }
 
 }

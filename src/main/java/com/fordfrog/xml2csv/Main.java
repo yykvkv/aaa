@@ -16,8 +16,7 @@ public class Main {
             if (VALIDATOR.isValid(arguments))
                 convert(arguments);
         } catch (Xml2CsvException e) {
-            e.printStackTrace();
-            System.out.println(e.getMessage());
+            System.err.println(e.getMessage());
             HELP_PRINTER.print();
         }
     }
