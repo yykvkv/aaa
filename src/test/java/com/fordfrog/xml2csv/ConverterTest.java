@@ -3,6 +3,11 @@ package com.fordfrog.xml2csv;
 import org.junit.Test;
 import uk.co.mruoc.properties.ClasspathFileContentLoader;
 import uk.co.mruoc.properties.FileContentLoader;
+import uk.co.mruoc.properties.FileSystemFileContentLoader;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -129,6 +134,34 @@ public class ConverterTest {
         String output = converter.convert(input);
 
         assertThat(output).isEqualTo(expected);
+    }
+
+    @Test
+    public void testPassingFilePaths() throws IOException {
+        PathProvider pathProvider = new StubPathProvider();
+        Path outputFilePath = pathProvider.getOutputFilePath();
+        try {
+            deleteFileIfExists(outputFilePath);
+            String expectedContent = contentLoader.loadContent("/output-simple.csv");
+            Converter converter = new Converter(new SimpleConfig());
+
+            converter.convert(pathProvider);
+
+            String actualContent = loadFileSystemContent(outputFilePath);
+            assertThat(actualContent).isEqualTo(expectedContent);
+        } finally {
+            deleteFileIfExists(outputFilePath);
+        }
+    }
+
+    private String loadFileSystemContent(Path path) {
+        FileContentLoader loader = new FileSystemFileContentLoader();
+        return loader.loadContent(path.toString());
+    }
+
+    private void deleteFileIfExists(Path path) throws IOException {
+        if (Files.exists(path))
+            Files.delete(path);
     }
 
 }

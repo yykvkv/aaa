@@ -4,3 +4,4 @@ build
 out
 *.iml
 my-gradle.properties
+test-files/output-simple.csv
