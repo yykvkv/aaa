@@ -15,7 +15,7 @@ public class ColumnsConverter {
     public static Map<String, Integer> toMap(List<String> columns) {
         Map<String, Integer> map = new LinkedHashMap<>();
         for (int i = 0; i < columns.size(); i++)
-            map.put(columns.get(i), i);
+            map.put(columns.get(i).trim(), i);
         return map;
     }
 
