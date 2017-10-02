@@ -2,7 +2,7 @@
 
 Simple XML to CSV conversion utility.
 
-## What it does exactly?
+## What does it do?
 
 It converts any XML file to CSV:
 
@@ -54,30 +54,123 @@ dependencies {
 }
 ```
 
+Once you have the dependency in you need to about building you conversion config.
+You can either use the DefaultConversionConfig and its builder class and pass it the
+information it needs, or you can implement the ConversionConfig interface and provide
+your own custom reusable config. Equivalent examples of both usage patterns are shown
+below:
+
+### Using DefaultConversionConfig
+
+```
+DefaultConversionConfigBuilder builder = new DefaultConversionConfigBuilder()
+    .setColumns(Arrays.asList("value1", "value2", "value3")) //sets columns to extract
+    .setSeparator("~") //sets field separator
+    .setTrim(true) //trims field values (defaults to false)
+    .setJoin(true) //joins duplicate field values (defaults to false)
+    .setRowItemName("/root/item") //row item name
+    .build();
+ConversionConfig config = builder.build();
+Converter converter = new Converter(config);
+...
+```
+
+### Implementing ConversionConfig
+
+```
+package com.fordfrog.xml2csv;
+
+import java.util.Arrays;
+import java.util.Map;
+
+public class SimpleConfig implements ConversionConfig {
+
+    @Override
+    public Map<String, Integer> getColumns() {
+        return ColumnsConverter.toMap("value1, value2, value3");
+    }
+
+    @Override
+    public String getSeparator() {
+        return TILDE;
+    }
+
+    @Override
+    public boolean shouldTrim() {
+        return true;
+    }
+
+    @Override
+    public boolean shouldJoin() {
+        return true;
+    }
+
+    @Override
+    public String getRowItemName() {
+        return "/root/item";
+    }
+
+}
+```
+
+Then once you have defined your config, you can use it like
+this:
+
+```
+...
+ConversionConfig config = new SimpleConversionConfig();
+Converter converter = new Converter(config);
+
+// to return the csv content into a variable you can do
+String csvContent = converter.convert(xmlContent);
+
+// to input from and output to a file you can do
+converter.convert(Paths.get("/input/file.xml"), Paths.get("/output/file.csv"));
+```
+
 Add more details here.
 
 ## Running Standalone
 
-Here is the usage information that xml-to-csv outputs if run without parameters:
+You can also run the library as a standalone application from the command line, the usage
+instructions are listed below:
 
-    Usage: java -jar xml2csv-*.jar --columns <columns> --input <file> --output <file> --item-name <xpath>
+    Usage: java -jar xml-to-csv-*.jar --columns <columns> --inputFile <file> --outputFile <file> --row-item-name <xpath>
 
-    General command line switches:
+    Command line switches:
 
-    --columns <columns>
-        List of columns that should be output to the CSV file. These names must
-        correspond to the element names within the item element.
-    --input <file>
-        Path to the input XML file.
-    --item-name
-        XPath which refers to XML element which will be converted to a row. It cannot
-        end with slash (/).
-    --join
-        Join values of multiple elements into single value using (, ) as a separator.
-        By default value of the first element is saved to CSV.
-    --output <file>
-        Path to the output CSV file. Output file content is always in UTF-8 encoding.
-    --separator <character>
-        Character that should be used to separate fields. Default value is (;).
-    --trim
-        Trim values. By default values are not trimmed.
+    -c,--columns <arg>          List of comma separated columns that should be 
+                                output to the CSV file. These names must correspond
+                                to the element names within the item element.
+    -i,--inputFile <arg>        Path to the input XML file. Input file content
+                                should always be in UTF-8 encoding.
+    -j,--join                   Join values of duplicated elements into single
+                                value using comma as a separator. By default
+                                value of all duplicated elements are saved to
+                                CSV.
+    -o,--outputFile <arg>       Path to the output CSV file. Output file
+                                content is always in UTF-8 encoding.
+    -r,--row-item-name <arg>    XPath which refers to XML element which will
+                                be converted to a row.
+    -s,--separator <arg>        Character that should be used to separate
+                                fields. Default value is semi-colon.
+    -t,--trim                   Trim values. By default values are not
+                                trimmed.
+                                
+                                
+## Running the Tests
+
+You can run the tests for this project by running the following command:
+
+```
+gradlew clean build
+```
+
+## Checking dependencies
+
+You can check the current dependencies used by the project to see whether
+or not they are currently up to date by running the following command:
+
+```
+gradlew dependencyUpdates
+```

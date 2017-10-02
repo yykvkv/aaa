@@ -8,14 +8,14 @@ public class DefaultConversionConfig implements ConversionConfig {
     private final String separator;
     private final boolean trim;
     private final boolean join;
-    private final String itemName;
+    private final String rowItemName;
 
     public DefaultConversionConfig(DefaultConversionConfigBuilder builder) {
         this.columns = builder.columns;
         this.separator = builder.separator;
         this.trim = builder.trim;
         this.join = builder.join;
-        this.itemName = builder.itemName;
+        this.rowItemName = builder.rowItemName;
     }
 
     @Override
@@ -40,7 +40,7 @@ public class DefaultConversionConfig implements ConversionConfig {
 
     @Override
     public String getRowItemName() {
-        return itemName;
+        return rowItemName;
     }
 
     public static class DefaultConversionConfigBuilder {
@@ -49,7 +49,7 @@ public class DefaultConversionConfig implements ConversionConfig {
         private String separator = DefaultSettings.SEPARATOR;
         private boolean trim = false;
         private boolean join = false;
-        private String itemName;
+        private String rowItemName;
 
         public DefaultConversionConfigBuilder setColumns(List<String> columns) {
             this.columns = ColumnsConverter.toMap(columns);
@@ -71,8 +71,8 @@ public class DefaultConversionConfig implements ConversionConfig {
             return this;
         }
 
-        public DefaultConversionConfigBuilder setItemName(String itemName) {
-            this.itemName = itemName;
+        public DefaultConversionConfigBuilder setRowItemName(String rowItemName) {
+            this.rowItemName = rowItemName;
             return this;
         }
 

@@ -75,7 +75,7 @@ public class DefaultConversionConfigTest {
     @Test
     public void shouldReturnItemName() {
         String itemName = "/item/name";
-        builder.setItemName(itemName);
+        builder.setRowItemName(itemName);
 
         ConversionConfig config = builder.build();
 
