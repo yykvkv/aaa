@@ -6,7 +6,7 @@ import uk.co.mruoc.properties.FileContentLoader;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ConvertorTest {
+public class ConverterTest {
 
     private final FileContentLoader contentLoader = new ClasspathFileContentLoader();
 
@@ -14,9 +14,9 @@ public class ConvertorTest {
     public void testConvertSimple() throws Throwable {
         String input = contentLoader.loadContent("/input-simple.xml");
         String expected = contentLoader.loadContent("/output-simple.csv");
-        Convertor convertor = new Convertor(new SimpleConfig());
+        Converter converter = new Converter(new SimpleConfig());
 
-        String output = convertor.convert(input);
+        String output = converter.convert(input);
 
         assertThat(output).isEqualTo(expected);
     }
@@ -25,9 +25,9 @@ public class ConvertorTest {
     public void testConvertTrimValues() throws Throwable {
         String input = contentLoader.loadContent("/input-simple.xml");
         String expected = contentLoader.loadContent("/output-trim.csv");
-        Convertor convertor = new Convertor(new TrimConfig());
+        Converter converter = new Converter(new TrimConfig());
 
-        String output = convertor.convert(input);
+        String output = converter.convert(input);
 
         assertThat(output).isEqualTo(expected);
     }
@@ -36,9 +36,9 @@ public class ConvertorTest {
     public void testConvertMultipleSelectAll() throws Throwable {
         String input = contentLoader.loadContent("/input-multiple.xml");
         String expected = contentLoader.loadContent("/output-multiple-select-all.csv");
-        Convertor convertor = new Convertor(new SimpleConfig());
+        Converter converter = new Converter(new SimpleConfig());
 
-        String output = convertor.convert(input);
+        String output = converter.convert(input);
 
         assertThat(output).isEqualTo(expected);
     }
@@ -47,9 +47,9 @@ public class ConvertorTest {
     public void testConvertMultipleJoin() throws Throwable {
         String input = contentLoader.loadContent("/input-multiple.xml");
         String expected = contentLoader.loadContent("/output-multiple-join.csv");
-        Convertor convertor = new Convertor(new JoinConfig());
+        Converter converter = new Converter(new JoinConfig());
 
-        String output = convertor.convert(input);
+        String output = converter.convert(input);
 
         assertThat(output).isEqualTo(expected);
     }
@@ -58,9 +58,9 @@ public class ConvertorTest {
     public void testConvertDeep() throws Throwable {
         String input = contentLoader.loadContent("/input-deep.xml");
         String expected = contentLoader.loadContent("/output-deep.csv");
-        Convertor convertor = new Convertor(new DeepConfig());
+        Converter converter = new Converter(new DeepConfig());
 
-        String output = convertor.convert(input);
+        String output = converter.convert(input);
 
         assertThat(output).isEqualTo(expected);
     }
@@ -69,9 +69,9 @@ public class ConvertorTest {
     public void testConvertHierarchy() throws Throwable {
         String input = contentLoader.loadContent("/input-hierarchy.xml");
         String expected = contentLoader.loadContent("/output-hierarchy.csv");
-        Convertor convertor = new Convertor(new HierarchyConfig());
+        Converter converter = new Converter(new HierarchyConfig());
 
-        String output = convertor.convert(input);
+        String output = converter.convert(input);
 
         assertThat(output).isEqualTo(expected);
     }
@@ -80,9 +80,9 @@ public class ConvertorTest {
     public void testConvertAttributes() throws Throwable {
         String input = contentLoader.loadContent("/input-attributes.xml");
         String expected = contentLoader.loadContent("/output-attributes.csv");
-        Convertor convertor = new Convertor(new AttributesConfig());
+        Converter converter = new Converter(new AttributesConfig());
 
-        String output = convertor.convert(input);
+        String output = converter.convert(input);
 
         assertThat(output).isEqualTo(expected);
     }
@@ -91,9 +91,9 @@ public class ConvertorTest {
     public void testConvertParentAttributes() throws Throwable {
         String input = contentLoader.loadContent("/input-parent-attributes.xml");
         String expected = contentLoader.loadContent("/output-parent-attributes.csv");
-        Convertor convertor = new Convertor(new ParentAttributesConfig());
+        Converter converter = new Converter(new ParentAttributesConfig());
 
-        String output = convertor.convert(input);
+        String output = converter.convert(input);
 
         assertThat(output).isEqualTo(expected);
     }
@@ -102,9 +102,9 @@ public class ConvertorTest {
     public void testConvertNewLines() throws Throwable {
         String input = "<r><i><v>1\n1</v></i></r>";
         String expected = "v\n1\n1\n";
-        Convertor convertor = new Convertor(new NewLinesConfig());
+        Converter converter = new Converter(new NewLinesConfig());
 
-        String output = convertor.convert(input);
+        String output = converter.convert(input);
 
         assertThat(output).isEqualTo(expected);
     }
@@ -113,9 +113,9 @@ public class ConvertorTest {
     public void testConvertNewLinesBetweenXmlEscape() throws Throwable {
         String input = "<r><i><v>&lt;p /&gt;\n&lt;p /&gt;</v></i></r>";
         String expected = "v\n<p />\n<p />\n";
-        Convertor convertor = new Convertor(new NewLinesConfig());
+        Converter converter = new Converter(new NewLinesConfig());
 
-        String output = convertor.convert(input);
+        String output = converter.convert(input);
 
         assertThat(output).isEqualTo(expected);
     }
@@ -124,9 +124,9 @@ public class ConvertorTest {
     public void testHandleRealWorldScenarioArm2() throws Throwable {
         String input = contentLoader.loadContent("/input-real-arm2.xml");
         String expected = contentLoader.loadContent("/output-real-arm2.csv");
-        Convertor convertor = new Convertor(new Arm2Config());
+        Converter converter = new Converter(new Arm2Config());
 
-        String output = convertor.convert(input);
+        String output = converter.convert(input);
 
         assertThat(output).isEqualTo(expected);
     }

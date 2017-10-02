@@ -28,8 +28,8 @@ public class Main {
     }
 
     private static void convert(Arguments arguments) {
-        Convertor convertor = new Convertor(arguments);
-        convertor.convert(arguments);
+        Converter converter = new Converter(arguments);
+        converter.convert(arguments);
     }
 
 }

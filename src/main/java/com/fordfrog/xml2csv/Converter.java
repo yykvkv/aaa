@@ -11,7 +11,7 @@ import java.util.Map;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-public class Convertor {
+public class Converter {
 
     private static final Charset UTF8 = Charset.forName("UTF8");
 
@@ -28,7 +28,7 @@ public class Convertor {
     private String currentPath;
     private Row row;
 
-    public Convertor(ConversionConfig config) {
+    public Converter(ConversionConfig config) {
         this.columns = config.getColumns();
         this.itemName = config.getItemName();
         this.shouldJoin = config.shouldJoin();
