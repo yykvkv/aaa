@@ -31,11 +31,17 @@ Choose any XML element using XPath expression in order to select XML elements
 for conversion to CSV file. Only child elements that match the expression will
 be converted.
 
-Note the library does not support all xml, you can do simple matching on element
-names, e.g. from the above example you could select value three using
+### XPath Support
+
+The application does not comprehensively support all xpath queries. You can do simple
+matching on element names, e.g. from the above example you could select value three using
 /root/item/subitem2/value3. You can also select specific elements using attributes
-that are attached (note, if you do this you must specify all attributes on the element
-rather than just one, this is a current limitation of the implementation.)
+that are attached, however if you do this, you must specify all attributes on the element
+rather than just one, this is a current limitation of the implementation.
+
+### Encoding
+
+The application expects all files to be UTF-8 encoded
 
 ## Usage
 
@@ -48,17 +54,11 @@ dependencies {
 }
 ```
 
-## Compilation
+Add more details here.
 
-You are not required to compile the application yourself, you can download
-latest binary from https://github.com/fordfrog/xml2csv/downloads. Anyway,
-compilation of xml2csv is easy. Once you install Apache Maven, you just need
-to run `mvn package` in the root directory of the sources, where pom.xml file is
-located.
+## Running Standalone
 
-## Running
-
-Here is the usage information that xml2csv outputs if run without parameters:
+Here is the usage information that xml-to-csv outputs if run without parameters:
 
     Usage: java -jar xml2csv-*.jar --columns <columns> --input <file> --output <file> --item-name <xpath>
 
@@ -81,73 +81,3 @@ Here is the usage information that xml2csv outputs if run without parameters:
         Character that should be used to separate fields. Default value is (;).
     --trim
         Trim values. By default values are not trimmed.
-
-    Filtering rows:
-
-    --filter-column <name>
-        Column on which the filter should be applied. When specifying filter command
-        line switches, you must use this switch as the first one as it initializes
-        new filter. You can specify more filters, each one beginning with this
-        switch. You can filter the rows even on columns that are not part of the
-        output. Filtering is performed before remapping.
-    ..filter.values <file>
-        Path to file containing values that the filter should use. Empty rows are
-        added to the values too.
-    --filter-exclude
-        Excludes all rows where the column value matches one of the specified values.
-    --filter-include
-        Includes all rows where the column value matches one of the specified values.
-        This is the default behavior if --filter-exclude|--filter-include is not
-        specified.
-
-    Remapping (replacing) values:
-
-    --remap-column <name>
-        Column in which original values should be replaced with values from map
-        file. When specifying remapping command line switches, you must use this
-        switch as the first one as it initializes new remapping. You can specify
-        more remappings, each one beginning with this switch. Remapping is performed
-        after filtering.
-    --remap-map <file>
-        Path to file containing original value and new value pairs. The file uses
-        CSV format. Values can be escaped either using single-quote (') or
-        double-quote ("). Quotes within values can be escaped either doubling them
-        ("" and '') or backslash-escaping them (\" and \').
-
-Characters encoding:
-
-    Application expects all files being in UTF-8 encoding.
-
-## To do
-
-Nothing at this moment.
-
-## License
-
-xml2csv is distributed under MIT license.
-
-## Changelog
-
-### Version 1.2.2
-
-* Fixed removal of new lines from the strings.
-
-### Version 1.2.1
-
-* Updated plugin and dependency versions.
-
-### Version 1.2.0
-
-* Added support for trimming values.
-* Added support for custom separator.
-* Added support for joining values of repeated XML elements.
-* Added support for handling any XML document.
-
-### Version 1.1.0
-
-* Added support for filtering rows.
-* Added support for remapping (replacing) values.
-
-### Version 1.0.0
-
-Initial release.
