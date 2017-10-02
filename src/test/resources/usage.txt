@@ -1,0 +1,18 @@
+usage: xml-to-csv
+ -c,--columns <arg>         List of columns that should be output to the
+                            CSV file. These names must correspond to the
+                            element names within the item element.
+ -i,--inputFile <arg>       Path to the input XML file. Input file content
+                            should always be in UTF-8 encoding.
+ -j,--join                  Join values of duplicated elements into single
+                            value using comma as a separator. By default
+                            value of all duplicated elements are saved to
+                            CSV.
+ -o,--outputFile <arg>      Path to the output CSV file. Output file
+                            content is always in UTF-8 encoding.
+ -r,--row-item-name <arg>   XPath which refers to XML element which will
+                            be converted to a row.
+ -s,--separator <arg>       Character that should be used to separate
+                            fields. Default value is semi-colon.
+ -t,--trim                  Trim values. By default values are not
+                            trimmed.

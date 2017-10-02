@@ -31,6 +31,7 @@ public class MainTest {
         Main.main();
 
         assertThat(systemErrRule.getLog()).isEqualTo("row item name must be provided" + NEW_LINE);
+        assertThat(systemOutRule.getLog()).isEqualToIgnoringWhitespace(loadUsageText());
     }
 
     @Test
@@ -38,6 +39,7 @@ public class MainTest {
         Main.main("-r", "/root/item");
 
         assertThat(systemErrRule.getLog()).isEqualTo("at least one column must be provided" + NEW_LINE);
+        assertThat(systemOutRule.getLog()).isEqualToIgnoringWhitespace(loadUsageText());
     }
 
     @Test
@@ -46,6 +48,7 @@ public class MainTest {
                 "-c", "value1, value2, value3");
 
         assertThat(systemErrRule.getLog()).isEqualTo("input file path must be provided" + NEW_LINE);
+        assertThat(systemOutRule.getLog()).isEqualToIgnoringWhitespace(loadUsageText());
     }
 
     @Test
@@ -55,6 +58,7 @@ public class MainTest {
                 "-i", "invalid/path");
 
         assertThat(systemErrRule.getLog()).isEqualTo("input file invalid/path does not exist" + NEW_LINE);
+        assertThat(systemOutRule.getLog()).isEqualToIgnoringWhitespace(loadUsageText());
     }
 
     @Test
@@ -67,6 +71,7 @@ public class MainTest {
                 "-i", inputFilePath.toString());
 
         assertThat(systemErrRule.getLog()).isEqualTo("output file path must be provided" + NEW_LINE);
+        assertThat(systemOutRule.getLog()).isEqualToIgnoringWhitespace(loadUsageText());
     }
 
     @Test
@@ -80,6 +85,11 @@ public class MainTest {
                 "-o", "invalid/path");
 
         assertThat(systemErrRule.getLog()).isEqualTo("output folder invalid does not exist or is not a directory" + NEW_LINE);
+        assertThat(systemOutRule.getLog()).isEqualToIgnoringWhitespace(loadUsageText());
+    }
+
+    private String loadUsageText() {
+        return contentLoader.loadContent("/usage.txt");
     }
 
     @Test
