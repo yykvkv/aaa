@@ -87,6 +87,8 @@ public class Converter {
                         case XMLStreamReader.END_ELEMENT:
                             handleEndElement(reader, writer);
                             break;
+                        default:
+                            // intentionally blank
                     }
                 }
             } finally {

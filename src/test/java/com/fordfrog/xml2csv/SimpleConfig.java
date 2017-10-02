@@ -1,6 +1,5 @@
 package com.fordfrog.xml2csv;
 
-import java.util.Arrays;
 import java.util.Map;
 
 public class SimpleConfig implements ConversionConfig {
