@@ -1,5 +1,8 @@
 # Xml To Csv
 
+[![Build Status](https://travis-ci.org/michaelruocco/xml-to-csv.svg?branch=master)](https://travis-ci.org/michaelruocco/xml-to-csv)
+[![Coverage Status](https://coveralls.io/repos/github/michaelruocco/xml-to-csv/badge.svg?branch=master)](https://coveralls.io/github/michaelruocco/xml-to-csv?branch=master)
+
 Simple XML to CSV conversion utility.
 
 ## What does it do?
