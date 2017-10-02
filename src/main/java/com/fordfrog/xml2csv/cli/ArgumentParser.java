@@ -1,14 +1,12 @@
 package com.fordfrog.xml2csv.cli;
 
 import com.fordfrog.xml2csv.DefaultSettings;
+import com.fordfrog.xml2csv.Xml2CsvException;
 import com.fordfrog.xml2csv.cli.Arguments.ArgumentsBuilder;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.ParseException;
-
-import java.util.Arrays;
-import java.util.List;
 
 public class ArgumentParser {
 
@@ -29,7 +27,7 @@ public class ArgumentParser {
             CommandLine commandLine = parser.parse(options, args);
             return toArguments(commandLine);
         } catch (ParseException e) {
-            throw new RuntimeException(e);
+            throw new Xml2CsvException(e);
         }
     }
 
