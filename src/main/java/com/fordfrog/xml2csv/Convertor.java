@@ -3,10 +3,7 @@ package com.fordfrog.xml2csv;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
-import java.io.Writer;
+import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -25,7 +22,7 @@ public class Convertor {
     private final String itemName;
     private final boolean shouldJoin;
     private final boolean shouldTrim;
-    private final char separator;
+    private final String separator;
 
     private int columnIndex;
     private String currentPath;
@@ -46,9 +43,15 @@ public class Convertor {
         return writer.toString();
     }
 
-    public void convert(final Path inputFile, final Path outputFile) {
-        try (final InputStream inputStream = Files.newInputStream(inputFile)) {
-            try (final Writer writer = Files.newBufferedWriter(outputFile, UTF8)) {
+    public void convert(PathProvider pathProvider) {
+        Path inputFilePath = pathProvider.getInputFilePath();
+        Path outputFilePath = pathProvider.getOutputFilePath();
+        convert(inputFilePath, outputFilePath);
+    }
+
+    public void convert(Path inputFile, Path outputFile) {
+        try (InputStream inputStream = Files.newInputStream(inputFile)) {
+            try (Writer writer = Files.newBufferedWriter(outputFile, UTF8)) {
                 convert(inputStream, new DefaultCsvWriter(writer, separator));
             }
         } catch (final IOException e) {
@@ -56,7 +59,7 @@ public class Convertor {
         }
     }
 
-    public void convert(final InputStream inputStream, CsvWriter writer) {
+    private void convert(InputStream inputStream, CsvWriter writer) {
         writeHeader(writer);
         writeData(inputStream, writer);
     }
@@ -65,7 +68,7 @@ public class Convertor {
         writer.write(columns.keySet());
     }
 
-    private void writeData(final InputStream inputStream, CsvWriter writer) {
+    private void writeData(InputStream inputStream, CsvWriter writer) {
         try {
             final XMLStreamReader reader = inputStreamConverter.toXmlStreamReader(inputStream);
             try {

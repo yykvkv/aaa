@@ -3,7 +3,6 @@ package com.fordfrog.xml2csv;
 import com.fordfrog.xml2csv.DefaultConversionConfig.DefaultConversionConfigBuilder;
 import org.junit.Test;
 
-import java.util.AbstractMap;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Arrays;
 import java.util.Map;
@@ -28,12 +27,12 @@ public class DefaultConversionConfigTest {
     public void separatorShouldDefaultToSemiColon() {
         ConversionConfig config = builder.build();
 
-        assertThat(config.getSeparator()).isEqualTo(';');
+        assertThat(config.getSeparator()).isEqualTo(";");
     }
 
     @Test
     public void shouldReturnSeparator() {
-        char separator = '~';
+        String separator = "~";
         builder.setSeparator(separator);
 
         ConversionConfig config = builder.build();

@@ -5,7 +5,7 @@ import java.util.*;
 public class DefaultConversionConfig implements ConversionConfig {
 
     private final Map<String, Integer> columns;
-    private final char separator;
+    private final String separator;
     private final boolean trim;
     private final boolean join;
     private final String itemName;
@@ -24,7 +24,7 @@ public class DefaultConversionConfig implements ConversionConfig {
     }
 
     @Override
-    public char getSeparator() {
+    public String getSeparator() {
         return separator;
     }
 
@@ -46,7 +46,7 @@ public class DefaultConversionConfig implements ConversionConfig {
     public static class DefaultConversionConfigBuilder {
 
         private Map<String, Integer> columns;
-        private char separator = ';';
+        private String separator = DEFAULT_SEPARATOR;
         private boolean trim = false;
         private boolean join = false;
         private String itemName;
@@ -56,7 +56,7 @@ public class DefaultConversionConfig implements ConversionConfig {
             return this;
         }
 
-        public DefaultConversionConfigBuilder setSeparator(char separator) {
+        public DefaultConversionConfigBuilder setSeparator(String separator) {
             this.separator = separator;
             return this;
         }

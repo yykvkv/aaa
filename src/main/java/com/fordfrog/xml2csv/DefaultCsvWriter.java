@@ -10,13 +10,13 @@ import java.util.Collection;
 public class DefaultCsvWriter implements CsvWriter {
 
     private final Writer writer;
-    private final char separator;
+    private final String separator;
 
-    public DefaultCsvWriter(char separator) {
+    public DefaultCsvWriter(String separator) {
         this(new StringWriter(), separator);
     }
 
-    public DefaultCsvWriter(Writer writer, char separator) {
+    public DefaultCsvWriter(Writer writer, String separator) {
         this.writer = writer;
         this.separator = separator;
     }

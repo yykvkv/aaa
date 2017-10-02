@@ -11,8 +11,8 @@ public class ParentAttributesConfig implements ConversionConfig {
     }
 
     @Override
-    public char getSeparator() {
-        return ';';
+    public String getSeparator() {
+        return DEFAULT_SEPARATOR;
     }
 
     @Override

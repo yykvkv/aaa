@@ -16,8 +16,8 @@ public class HierarchyConfig implements ConversionConfig {
     }
 
     @Override
-    public char getSeparator() {
-        return ',';
+    public String getSeparator() {
+        return COMMA;
     }
 
     @Override

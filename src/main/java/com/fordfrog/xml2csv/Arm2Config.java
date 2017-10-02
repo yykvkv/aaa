@@ -38,8 +38,8 @@ public class Arm2Config implements ConversionConfig {
     }
 
     @Override
-    public char getSeparator() {
-        return '~';
+    public String getSeparator() {
+        return TILDE;
     }
 
     @Override
