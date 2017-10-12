@@ -18,6 +18,8 @@ public class Converter {
     private final InputStreamConverter inputStreamConverter = new InputStreamConverter();
     private final XmlStreamReaderConverter xmlStreamReaderConverter = new XmlStreamReaderConverter();
 
+    private final ValuesConverter valuesConverter;
+
     private final Map<String, Integer> columns;
     private final String itemName;
     private final boolean shouldJoin;
@@ -34,12 +36,13 @@ public class Converter {
         this.shouldJoin = config.shouldJoin();
         this.shouldTrim = config.shouldTrim();
         this.separator = config.getSeparator();
+        this.valuesConverter = new ValuesConverter(separator);
     }
 
     public String convert(String input) {
         InputStream inputStream = IOUtils.toInputStream(input, UTF8);
         StringWriter writer = new StringWriter();
-        convert(inputStream, new DefaultCsvWriter(writer, separator));
+        convert(inputStream, new DefaultCsvWriter(writer));
         return writer.toString();
     }
 
@@ -52,23 +55,24 @@ public class Converter {
     public void convert(Path inputFile, Path outputFile) {
         try (InputStream inputStream = Files.newInputStream(inputFile)) {
             try (Writer writer = Files.newBufferedWriter(outputFile, UTF8)) {
-                convert(inputStream, new DefaultCsvWriter(writer, separator));
+                convert(inputStream, new DefaultCsvWriter(writer));
             }
         } catch (final IOException e) {
             throw new Xml2CsvException(e);
         }
     }
 
-    private void convert(InputStream inputStream, CsvWriter writer) {
-        writeHeader(writer);
-        writeData(inputStream, writer);
+    private void convert(InputStream inputStream, LineHandler lineHandler) {
+        writeHeader(lineHandler);
+        writeData(inputStream, lineHandler);
     }
 
-    private void writeHeader(CsvWriter writer) {
-        writer.write(columns.keySet());
+    private void writeHeader(LineHandler writer) {
+        String line = valuesConverter.toLine(columns.keySet());
+        writer.handler(line);
     }
 
-    private void writeData(InputStream inputStream, CsvWriter writer) {
+    private void writeData(InputStream inputStream, LineHandler lineHandler) {
         try {
             final XMLStreamReader reader = inputStreamConverter.toXmlStreamReader(inputStream);
             try {
@@ -85,7 +89,7 @@ public class Converter {
                             handleCharacters(reader);
                             break;
                         case XMLStreamReader.END_ELEMENT:
-                            handleEndElement(reader, writer);
+                            handleEndElement(reader, lineHandler);
                             break;
                         default:
                             // intentionally blank
@@ -126,9 +130,10 @@ public class Converter {
         }
     }
 
-    private void handleEndElement(XMLStreamReader reader, CsvWriter writer) {
+    private void handleEndElement(XMLStreamReader reader, LineHandler lineHandler) {
         if (currentPath.equals(itemName)) {
-            writer.write(row);
+            String line = valuesConverter.toLine(row.getValues());
+            lineHandler.handler(line);
         }
         columnIndex = -1;
         if (!StringUtils.isEmpty(currentPath)) {
