@@ -78,7 +78,7 @@ uploadArchives {
                 description 'Forked version of fordfrog xml2csv library that allows selection of xml elements via attributes'
                 groupId 'com.github.michaelruocco'
                 artifactId 'xml-to-csv'
-                version '1.0.0'
+                version '1.0.1'
                 url 'https://github.com/michaelruocco/xml-to-csv'
 
                 developers {
