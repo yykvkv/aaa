@@ -23,7 +23,6 @@ public class Converter {
     private final String itemName;
     private final boolean shouldJoin;
     private final boolean shouldTrim;
-    private final String separator;
 
     private int columnIndex;
     private String currentPath;
@@ -34,8 +33,7 @@ public class Converter {
         this.itemName = config.getRowItemName();
         this.shouldJoin = config.shouldJoin();
         this.shouldTrim = config.shouldTrim();
-        this.separator = config.getSeparator();
-        this.valuesConverter = new ValuesConverter(separator);
+        this.valuesConverter = new ValuesConverter(config.getSeparator());
     }
 
     public String convert(String input) {
