@@ -17,7 +17,7 @@ public class DefaultCsvWriter implements LineHandler {
     }
 
     @Override
-    public void handler(String line) {
+    public void handle(String line) {
         try {
             writer.append(line);
             writer.append(System.lineSeparator());

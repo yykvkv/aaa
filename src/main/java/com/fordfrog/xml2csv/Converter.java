@@ -67,7 +67,7 @@ public class Converter {
 
     private void writeHeader(LineHandler writer) {
         String line = valuesConverter.toLine(columns.keySet());
-        writer.handler(line);
+        writer.handle(line);
     }
 
     private void writeData(InputStream inputStream, LineHandler lineHandler) {
@@ -132,7 +132,7 @@ public class Converter {
     private void handleEndElement(XMLStreamReader reader, LineHandler lineHandler) {
         if (currentPath.isNewLine()) {
             String line = valuesConverter.toLine(row.getValues());
-            lineHandler.handler(line);
+            lineHandler.handle(line);
         }
         currentColumn.reset();
         if (!currentPath.isEmpty()) {
