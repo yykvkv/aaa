@@ -1,11 +1,9 @@
 package com.fordfrog.xml2csv;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import java.io.*;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Map;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -15,15 +13,14 @@ import static org.apache.commons.lang3.StringUtils.*;
 
 public class Converter {
 
-    private final ValuesConverter valuesConverter;
-
     private final Map<String, Integer> columns;
     private final String itemName;
     private final boolean shouldJoin;
     private final boolean shouldTrim;
+    private final ValuesConverter valuesConverter;
 
-    private final CurrentColumn currentColumn;
-    private final CurrentPath currentPath;
+    private Column column;
+    private Path path;
     private Row row;
 
     public Converter(ConversionConfig config) {
@@ -32,9 +29,7 @@ public class Converter {
         this.shouldJoin = config.shouldJoin();
         this.shouldTrim = config.shouldTrim();
         this.valuesConverter = new ValuesConverter(config.getSeparator());
-
-        this.currentColumn = new CurrentColumn();
-        this.currentPath = new CurrentPath(itemName);
+        initialise();
     }
 
     public String convert(String input) {
@@ -45,12 +40,12 @@ public class Converter {
     }
 
     public void convert(PathProvider pathProvider) {
-        Path inputFilePath = pathProvider.getInputFilePath();
-        Path outputFilePath = pathProvider.getOutputFilePath();
+        java.nio.file.Path inputFilePath = pathProvider.getInputFilePath();
+        java.nio.file.Path outputFilePath = pathProvider.getOutputFilePath();
         convert(inputFilePath, outputFilePath);
     }
 
-    public void convert(Path inputFile, Path outputFile) {
+    public void convert(java.nio.file.Path inputFile, java.nio.file.Path outputFile) {
         try (InputStream inputStream = Files.newInputStream(inputFile)) {
             try (Writer writer = Files.newBufferedWriter(outputFile, UTF_8)) {
                 convert(inputStream, new DefaultCsvWriter(writer));
@@ -74,9 +69,7 @@ public class Converter {
         try {
             final XMLStreamReader reader = InputStreamConverter.toXmlStreamReader(inputStream);
             try {
-                currentPath.reset();
-                row = new Row(shouldTrim, columns.size());
-                currentColumn.reset();
+                initialise();
                 while (reader.hasNext()) {
                     int next = reader.next();
                     switch (next) {
@@ -103,58 +96,63 @@ public class Converter {
 
     private void handleStartElement(XMLStreamReader reader) {
         String name = XmlStreamReaderConverter.toLocalName(reader);
-        currentPath.append(name);
-        String toFind = currentPath.getElementToFind();
-        if (columns.containsKey(toFind)) {
-            currentColumn.setIndex(columns.get(toFind));
-        } else if (toFind.contains("@")) {
-            toFind = toFind.substring(0, toFind.indexOf("["));
-            if (columns.containsKey(toFind)) {
-                currentColumn.setIndex(columns.get(toFind));
+        path.append(name);
+        System.out.println("start element " + path.path);
+        String currentElement = path.getCurrentElement();
+        System.out.println("required " + columns.containsKey(currentElement));
+        if (columns.containsKey(currentElement)) {
+            column.setIndex(columns.get(currentElement));
+        } else if (currentElement.contains("@")) {
+            currentElement = currentElement.substring(0, currentElement.indexOf("["));
+            if (columns.containsKey(currentElement)) {
+                column.setIndex(columns.get(currentElement));
             }
-        }
-        if (currentPath.isNewLine()) {
-            row = new Row(shouldTrim, columns.size());
         }
     }
 
+    private void initialise() {
+        column = new Column();
+        path = new Path(itemName);
+        row = new Row(shouldTrim, columns.size());
+    }
+
     private void handleCharacters(XMLStreamReader reader) {
-        if (currentColumn.isSet()) {
-            int index = currentColumn.getIndex();
-            if (shouldJoin) {
-                row.join(index, reader.getText());
-            } else {
-                row.append(index, reader.getText());
-            }
+        if (!column.isSet()) {
+            return;
+        }
+
+        int index = column.getIndex();
+        if (shouldJoin) {
+            row.join(index, reader.getText());
+        } else {
+            row.append(index, reader.getText());
         }
     }
 
     private void handleEndElement(XMLStreamReader reader, LineHandler lineHandler) {
-        if (currentPath.isNewLine()) {
+        System.out.println("ending element " + path.path);
+        if (path.isNewLine()) {
             String line = valuesConverter.toLine(row.getValues());
+            System.out.println("row complete, writing " + line + " to csv");
             lineHandler.handle(line);
+            row = new Row(shouldTrim, columns.size());
         }
-        currentColumn.reset();
-        if (!currentPath.isEmpty()) {
-            currentPath.removeLastOccurrence(reader.getLocalName());
-        }
+        column = new Column();
+        path.removeLastOccurrence(reader.getLocalName());
     }
 
-    private static class CurrentColumn {
+    private static class Column {
 
         private static final int NOT_SET_VALUE = -1;
 
         private int index = NOT_SET_VALUE;
-
-        public void reset() {
-            index = NOT_SET_VALUE;
-        }
 
         public boolean isSet() {
             return index > NOT_SET_VALUE;
         }
 
         public void setIndex(int index) {
+            System.out.println("set current column " + index);
             this.index = index;
         }
 
@@ -164,29 +162,21 @@ public class Converter {
 
     }
 
-    private static class CurrentPath {
+    private static class Path {
 
         private final String itemName;
         private String path = EMPTY;
 
-        public CurrentPath(String itemName) {
+        public Path(String itemName) {
             this.itemName = itemName;
-        }
-
-        public void reset() {
-            path = EMPTY;
         }
 
         public void append(String name) {
             path += "/" + name;
         }
 
-        public String getElementToFind() {
+        public String getCurrentElement() {
             return path.replace(itemName + "/", "");
-        }
-
-        public boolean isEmpty() {
-            return StringUtils.isEmpty(path);
         }
 
         public boolean isNewLine() {

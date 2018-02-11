@@ -21,12 +21,14 @@ public class Row {
         if (!StringUtils.isEmpty(joined.toString()))
             joined.append(",");
         joined.append(value);
+        System.out.println("joining value " + joined.toString() + " to column " + index);
         values.set(index, joined.toString());
     }
 
     public void append(int index, String value) {
         String appendedValue = values.get(index);
         appendedValue += value;
+        System.out.println("appending value " + appendedValue + " to column " + index);
         values.set(index, appendedValue);
     }
 
