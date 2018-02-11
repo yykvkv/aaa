@@ -4,16 +4,15 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.*;
-import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-public class Converter {
+import static java.nio.charset.StandardCharsets.*;
 
-    private static final Charset UTF8 = Charset.forName("UTF8");
+public class Converter {
 
     private final InputStreamConverter inputStreamConverter = new InputStreamConverter();
     private final XmlStreamReaderConverter xmlStreamReaderConverter = new XmlStreamReaderConverter();
@@ -40,7 +39,7 @@ public class Converter {
     }
 
     public String convert(String input) {
-        InputStream inputStream = IOUtils.toInputStream(input, UTF8);
+        InputStream inputStream = IOUtils.toInputStream(input, UTF_8);
         StringWriter writer = new StringWriter();
         convert(inputStream, new DefaultCsvWriter(writer));
         return writer.toString();
@@ -54,7 +53,7 @@ public class Converter {
 
     public void convert(Path inputFile, Path outputFile) {
         try (InputStream inputStream = Files.newInputStream(inputFile)) {
-            try (Writer writer = Files.newBufferedWriter(outputFile, UTF8)) {
+            try (Writer writer = Files.newBufferedWriter(outputFile, UTF_8)) {
                 convert(inputStream, new DefaultCsvWriter(writer));
             }
         } catch (final IOException e) {
@@ -120,7 +119,6 @@ public class Converter {
     }
 
     private void handleCharacters(XMLStreamReader reader) {
-
         if (columnIndex > -1) {
             if (shouldJoin) {
                 row.join(columnIndex, reader.getText());
