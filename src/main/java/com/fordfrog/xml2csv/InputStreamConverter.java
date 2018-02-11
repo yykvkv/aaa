@@ -7,7 +7,7 @@ import java.io.InputStream;
 
 public class InputStreamConverter {
 
-    public XMLStreamReader toXmlStreamReader(InputStream inputStream) {
+    public static XMLStreamReader toXmlStreamReader(InputStream inputStream) {
         try {
             final XMLInputFactory xMLInputFactory = XMLInputFactory.newInstance();
             return xMLInputFactory.createXMLStreamReader(inputStream);

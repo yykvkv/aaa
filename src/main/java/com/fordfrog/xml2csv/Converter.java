@@ -11,11 +11,9 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import static java.nio.charset.StandardCharsets.*;
+import static org.apache.commons.lang3.StringUtils.*;
 
 public class Converter {
-
-    private final InputStreamConverter inputStreamConverter = new InputStreamConverter();
-    private final XmlStreamReaderConverter xmlStreamReaderConverter = new XmlStreamReaderConverter();
 
     private final ValuesConverter valuesConverter;
 
@@ -24,9 +22,8 @@ public class Converter {
     private final boolean shouldJoin;
     private final boolean shouldTrim;
 
-    private CurrentColumn currentColumn = new CurrentColumn();
-    //private int columnIndex;
-    private String currentPath;
+    private final CurrentColumn currentColumn;
+    private final CurrentPath currentPath;
     private Row row;
 
     public Converter(ConversionConfig config) {
@@ -35,6 +32,9 @@ public class Converter {
         this.shouldJoin = config.shouldJoin();
         this.shouldTrim = config.shouldTrim();
         this.valuesConverter = new ValuesConverter(config.getSeparator());
+
+        this.currentColumn = new CurrentColumn();
+        this.currentPath = new CurrentPath(itemName);
     }
 
     public String convert(String input) {
@@ -72,12 +72,11 @@ public class Converter {
 
     private void writeData(InputStream inputStream, LineHandler lineHandler) {
         try {
-            final XMLStreamReader reader = inputStreamConverter.toXmlStreamReader(inputStream);
+            final XMLStreamReader reader = InputStreamConverter.toXmlStreamReader(inputStream);
             try {
-                currentPath = "";
+                currentPath.reset();
                 row = new Row(shouldTrim, columns.size());
                 currentColumn.reset();
-                //columnIndex = -1;
                 while (reader.hasNext()) {
                     int next = reader.next();
                     switch (next) {
@@ -103,9 +102,9 @@ public class Converter {
     }
 
     private void handleStartElement(XMLStreamReader reader) {
-        String name = xmlStreamReaderConverter.toLocalName(reader);
-        currentPath += "/" + name;
-        String toFind = currentPath.replace(itemName + "/", "");
+        String name = XmlStreamReaderConverter.toLocalName(reader);
+        currentPath.append(name);
+        String toFind = currentPath.getElementToFind();
         if (columns.containsKey(toFind)) {
             currentColumn.setIndex(columns.get(toFind));
         } else if (toFind.contains("@")) {
@@ -114,7 +113,7 @@ public class Converter {
                 currentColumn.setIndex(columns.get(toFind));
             }
         }
-        if (currentPath.equals(itemName)) {
+        if (currentPath.isNewLine()) {
             row = new Row(shouldTrim, columns.size());
         }
     }
@@ -131,14 +130,13 @@ public class Converter {
     }
 
     private void handleEndElement(XMLStreamReader reader, LineHandler lineHandler) {
-        if (currentPath.equals(itemName)) {
+        if (currentPath.isNewLine()) {
             String line = valuesConverter.toLine(row.getValues());
             lineHandler.handler(line);
         }
         currentColumn.reset();
-        if (!StringUtils.isEmpty(currentPath)) {
-            int startIndex = currentPath.lastIndexOf("/" + reader.getLocalName());
-            currentPath = currentPath.substring(0, startIndex);
+        if (!currentPath.isEmpty()) {
+            currentPath.removeLastOccurrence(reader.getLocalName());
         }
     }
 
@@ -162,6 +160,42 @@ public class Converter {
 
         public int getIndex() {
             return index;
+        }
+
+    }
+
+    private static class CurrentPath {
+
+        private final String itemName;
+        private String path = EMPTY;
+
+        public CurrentPath(String itemName) {
+            this.itemName = itemName;
+        }
+
+        public void reset() {
+            path = EMPTY;
+        }
+
+        public void append(String name) {
+            path += "/" + name;
+        }
+
+        public String getElementToFind() {
+            return path.replace(itemName + "/", "");
+        }
+
+        public boolean isEmpty() {
+            return StringUtils.isEmpty(path);
+        }
+
+        public boolean isNewLine() {
+            return path.equals(itemName);
+        }
+
+        public void removeLastOccurrence(String name) {
+            int startIndex = path.lastIndexOf("/" + name);
+            path = path.substring(0, startIndex);
         }
 
     }

@@ -4,7 +4,7 @@ import javax.xml.stream.XMLStreamReader;
 
 public class XmlStreamReaderConverter {
 
-    public String toLocalName(XMLStreamReader reader) {
+    public static String toLocalName(XMLStreamReader reader) {
         StringBuilder name = new StringBuilder(reader.getLocalName());
         if (reader.getAttributeCount() > 0)
             for (int a = 0; a < reader.getAttributeCount(); a++)
