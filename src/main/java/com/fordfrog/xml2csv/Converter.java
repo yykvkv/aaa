@@ -24,7 +24,8 @@ public class Converter {
     private final boolean shouldJoin;
     private final boolean shouldTrim;
 
-    private int columnIndex;
+    private CurrentColumn currentColumn = new CurrentColumn();
+    //private int columnIndex;
     private String currentPath;
     private Row row;
 
@@ -75,7 +76,8 @@ public class Converter {
             try {
                 currentPath = "";
                 row = new Row(shouldTrim, columns.size());
-                columnIndex = -1;
+                currentColumn.reset();
+                //columnIndex = -1;
                 while (reader.hasNext()) {
                     int next = reader.next();
                     switch (next) {
@@ -105,11 +107,12 @@ public class Converter {
         currentPath += "/" + name;
         String toFind = currentPath.replace(itemName + "/", "");
         if (columns.containsKey(toFind)) {
-            columnIndex = columns.get(toFind);
+            currentColumn.setIndex(columns.get(toFind));
         } else if (toFind.contains("@")) {
             toFind = toFind.substring(0, toFind.indexOf("["));
-            if (columns.containsKey(toFind))
-                columnIndex = columns.get(toFind);
+            if (columns.containsKey(toFind)) {
+                currentColumn.setIndex(columns.get(toFind));
+            }
         }
         if (currentPath.equals(itemName)) {
             row = new Row(shouldTrim, columns.size());
@@ -117,11 +120,12 @@ public class Converter {
     }
 
     private void handleCharacters(XMLStreamReader reader) {
-        if (columnIndex > -1) {
+        if (currentColumn.isSet()) {
+            int index = currentColumn.getIndex();
             if (shouldJoin) {
-                row.join(columnIndex, reader.getText());
+                row.join(index, reader.getText());
             } else {
-                row.append(columnIndex, reader.getText());
+                row.append(index, reader.getText());
             }
         }
     }
@@ -131,11 +135,35 @@ public class Converter {
             String line = valuesConverter.toLine(row.getValues());
             lineHandler.handler(line);
         }
-        columnIndex = -1;
+        currentColumn.reset();
         if (!StringUtils.isEmpty(currentPath)) {
             int startIndex = currentPath.lastIndexOf("/" + reader.getLocalName());
             currentPath = currentPath.substring(0, startIndex);
         }
+    }
+
+    private static class CurrentColumn {
+
+        private static final int NOT_SET_VALUE = -1;
+
+        private int index = NOT_SET_VALUE;
+
+        public void reset() {
+            index = NOT_SET_VALUE;
+        }
+
+        public boolean isSet() {
+            return index > NOT_SET_VALUE;
+        }
+
+        public void setIndex(int index) {
+            this.index = index;
+        }
+
+        public int getIndex() {
+            return index;
+        }
+
     }
 
 }
