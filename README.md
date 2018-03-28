@@ -2,9 +2,8 @@
 
 [![Build Status](https://travis-ci.org/michaelruocco/xml-to-csv.svg?branch=master)](https://travis-ci.org/michaelruocco/xml-to-csv)
 [![Coverage Status](https://coveralls.io/repos/github/michaelruocco/xml-to-csv/badge.svg?branch=master)](https://coveralls.io/github/michaelruocco/xml-to-csv?branch=master)
+[![Maven Central](https://img.shields.io/maven-metadata/v/http/central.maven.org/maven2/com/github/michaelruocco/xml-to-csv/maven-metadata.xml.svg)](http://repo1.maven.org/maven2/com/github/michaelruocco/xml-to-csv)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/1110c379076c4890a491fe86c53c5794)](https://www.codacy.com/app/michaelruocco/xml-to-csv?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=michaelruocco/xml-to-csv&amp;utm_campaign=Badge_Grade)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.michaelruocco/xml-to-csv/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.michaelruocco/xml-to-csv
-)
 
 Simple XML to CSV conversion utility.
 
